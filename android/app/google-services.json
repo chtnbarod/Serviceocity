@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "42863702818",
+    "project_id": "serviceocitynewpro",
+    "storage_bucket": "serviceocitynewpro.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:42863702818:android:2ce1d7ee5e4c02335beb7b",
+        "android_client_info": {
+          "package_name": "com.example.service_city_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXpcjDHIDI-LMDaNQuF4SzHneDhw5zSTw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:42863702818:android:81733bd69d3c81bb5beb7b",
+        "android_client_info": {
+          "package_name": "com.serviceocity.serviceocity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCXpcjDHIDI-LMDaNQuF4SzHneDhw5zSTw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
