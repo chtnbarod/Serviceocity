@@ -97,7 +97,7 @@ class Order extends StatelessWidget {
                             ),),
                           const SizedBox(width: 5,),
                          if((double.tryParse(featureServices?.salePrice??"0")??0)>0)
-                          Text("\u{20B9}${featureServices?.price??""}",
+                          Text("${PriceConverter.getFlag()}${featureServices?.price??""}",
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 10,

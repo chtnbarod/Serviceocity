@@ -30,33 +30,38 @@ class TimeSlotsPage extends StatelessWidget {
                 const SizedBox(height: 10,),
 
                 Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: InkWell(
                     onTap: (){
                       Get.to(SelectAddressPage(
                         callback: (dynamic json){
                           logic.setAddress(json: json);
-                          // print("DDDDSSSS  $json");
                         },
                       ));
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          children: [
+                        Flexible(
+                          child: Row(
+                            children: [
 
-                            const Icon(Icons.home, color: Colors.deepPurple,),
-                            SizedBox(width: 20,),
-                            Text(logic.address?.address1 ??  "Select Address",
-                              style: TextStyle(
-                                  fontWeight: logic.address?.address1 != null ? FontWeight.bold : null
-                              ),)
+                              Icon((logic.address?.type??"").toUpperCase() == "HOME" ? Icons.home : Icons.location_on, color: Colors.deepPurple,),
+                              const SizedBox(width: 20,),
+                              Flexible(
+                                child: Text(logic.address?.address1 ??  "Select Address",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontWeight: logic.address?.address1 != null ? FontWeight.bold : null
+                                  ),),
+                              )
 
-                          ],
+                            ],
+                          ),
                         ),
 
-                        Icon(Icons.arrow_forward_ios, color: Colors.deepPurple,)
+                        const Icon(Icons.arrow_forward_ios, color: Colors.deepPurple,)
                       ],
                     ),
                   ),

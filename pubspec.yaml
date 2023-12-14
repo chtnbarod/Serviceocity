@@ -90,16 +90,10 @@ flutter:
 
   # fonts:
   fonts:
-    - family: PT
+    - family: FiraSans
       fonts:
-        - asset: fonts/pt/PTSerif-Regular.ttf
-        - asset: fonts/pt/PTSerif-Bold.ttf
-    - family: Thasadith
-      fonts:
-        - asset: fonts/thasadith/Thasadith-Regular.ttf
-        - asset: fonts/thasadith/Thasadith-Bold.ttf
-        - asset: fonts/thasadith/Thasadith-Italic.ttf
-        - asset: fonts/thasadith/Thasadith-BoldItalic.ttf
+        - asset: fonts/firasans/FiraSans-Regular.ttf
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

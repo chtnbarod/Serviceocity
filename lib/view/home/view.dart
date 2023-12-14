@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:serviceocity/core/di/api_provider.dart';
+import 'package:serviceocity/model/UserModel.dart';
 import 'package:serviceocity/theme/app_colors.dart';
 import 'package:serviceocity/view/account/logic.dart';
 import 'package:serviceocity/view/home/widget/grid_category.dart';
@@ -9,10 +10,14 @@ import 'package:serviceocity/view/home/widget/location.dart';
 import 'package:serviceocity/view/home/widget/order.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:serviceocity/view/home/widget/sub_category.dart';
+import 'package:serviceocity/view/map/AddressListModel.dart';
 
 import '../../core/routes.dart';
 import '../../utils/assets.dart';
+import '../../utils/price_converter.dart';
 import '../../widget/common_image.dart';
+import '../../widget/not_found.dart';
+import '../map/binding.dart';
 import '../map/view.dart';
 import 'logic.dart';
 
@@ -73,14 +78,12 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  showLocationDialog() {
-    Get.bottomSheet(
-      const Location(),
-      enableDrag: false,
-      isScrollControlled: true,
-      barrierColor: Colors.transparent,
-      isDismissible: false,
-    );
+  showLocationDialog({ PrimaryAddress? primaryAddress }) {
+    Get.to(MyMap(addressListModel: AddressListModel.fromJson(primaryAddress?.toJson()),
+      callback: (AddressListModel? addressListModel) {
+      Get.find<HomeLogic>().updateUserAddress(context,addressListModel: addressListModel);
+      },
+    ), binding: MyMapBinding());
   }
 
 
@@ -104,12 +107,13 @@ class _HomePageState extends State<HomePage> {
         .size
         .width;
     double box = (width / 3) - 20;
+    print("SDFDF ${PriceConverter.getFlag()}");
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            Get.find<HomeLogic>().pullRefresh();
+            Get.find<HomeLogic>().pullRefresh(notify: true);
           },
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -120,169 +124,188 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
 
+                    InkWell(
+                      onTap: () {
+                        showLocationDialog(primaryAddress: Get.find<AccountLogic>().userModel?.primaryAddress);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: GetBuilder<AccountLogic>(
+                          assignId: true,
+                          builder: (account) {
+                            return Row(
+                              children: [
+                                if(logic.addressUpdating)...[
+                                  const SizedBox(
+                                    height: 35,
+                                    width: 35,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          height: 24,
+                                          width: 24,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ]else...[
+                                  const SizedBox(
+                                    height: 35,
+                                    width: 35,
+                                    child: Icon(
+                                      Icons.location_on, color: Colors.blue,
+                                      size: 35,),
+                                  ),
+                                ],
+
+                                const SizedBox(width: 10,),
+
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment
+                                      .start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        SizedBox(
+                                          width: width / 2.7,
+                                          child: Text(
+                                            "${account.userModel?.primaryAddress
+                                                ?.address1 ??
+                                                ""}${account.userModel?.primaryAddress
+                                                ?.address1 ?? ""}",
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w700
+                                            ),),
+                                        ),
+                                        const SizedBox(width: 5,),
+                                        const Icon(
+                                            Icons.keyboard_arrow_down_sharp),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: width / 2.7,
+                                      child: Text(
+                                        account.userModel?.primaryAddress?.city ??
+                                            "",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontSize: 12
+                                        ),),
+                                    ),
+                                  ],
+                                ),
+
+                                const Spacer(),
+
+                                Row(
+                                  children: [
+                                    // Container(
+                                    //     width: 35,
+                                    //     height: 35,
+                                    //     decoration: BoxDecoration(
+                                    //       color: Colors.white,
+                                    //       borderRadius: BorderRadius.circular(5),
+                                    //       boxShadow: [
+                                    //         const BoxShadow(
+                                    //           color: Color(0xffDDDDDD),
+                                    //           blurRadius: 6.0,
+                                    //           spreadRadius: 2.0,
+                                    //           offset: Offset(0.0, 0.0),
+                                    //         )
+                                    //       ],
+                                    //     ),
+                                    //     child: const Icon(
+                                    //       Icons.translate, color: Colors
+                                    //         .black,)),
+
+                                    InkWell(
+                                      onTap: () {
+                                        Get.toNamed(rsCartPage);
+                                      },
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          margin: const EdgeInsets.only(left: 10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                                20),
+                                            boxShadow: [
+                                              const BoxShadow(
+                                                color: Color(0xffDDDDDD),
+                                                blurRadius: 6.0,
+                                                spreadRadius: 2.0,
+                                                offset: Offset(0.0, 0.0),
+                                              )
+                                            ],
+                                          ),
+                                          child: Icon(Icons.shopping_cart,
+                                            color: AppColors.blackColor(),)),
+                                    ),
+
+                                    InkWell(
+                                      onTap: () {
+                                        Get.toNamed(rsProfilePage);
+                                      },
+                                      child: Container(
+                                          width: 40,
+                                          height: 40,
+                                          margin: const EdgeInsets.only(left: 10),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius: BorderRadius.circular(
+                                                20),
+                                            // boxShadow: [
+                                            //   const BoxShadow(
+                                            //     color: Color(0xffDDDDDD),
+                                            //     blurRadius: 6.0,
+                                            //     spreadRadius: 2.0,
+                                            //     offset: Offset(0.0, 0.0),
+                                            //   )
+                                            // ],
+                                          ),
+                                          child: CommonImage(
+                                            width: 40,
+                                            height: 40,
+                                            radius: 40,
+                                            assetPlaceholder: appUser,
+                                            imageUrl: "${ApiProvider.url}/${account
+                                                .userModel?.image}",
+                                          )),
+                                    ),
+                                  ],
+                                ),
+
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+
                     if(logic.isPullProcess)...[
-                      SizedBox(height: Get.height/2,),
+                      SizedBox(height: Get.height/3,),
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CircularProgressIndicator(strokeWidth: 2,),
+                          SizedBox(
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(strokeWidth: 2,)),
                         ],
                       ),
                     ]else...[
                       if(logic.isEmpty)...[
-                        SizedBox(height: Get.height/2,),
-                        const Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text("Our service is not available in your location",
-                              style: TextStyle(
-                                  color: Colors.black54
-                              ),),
-                          ],
-                        )
+                        const NotFound(message: "Our service is not available in your location"),
                       ]else...[
-                        InkWell(
-                          onTap: () {
-                            showLocationDialog();
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: GetBuilder<AccountLogic>(
-                              assignId: true,
-                              builder: (logic) {
-                                return Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.location_on, color: Colors.blue,
-                                      size: 35,),
-                                    const SizedBox(width: 10,),
-
-                                    Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment
-                                          .start,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            SizedBox(
-                                              width: width / 2.7,
-                                              child: Text(
-                                                "${logic.userModel?.primaryAddress
-                                                    ?.address1 ??
-                                                    ""}${logic.userModel?.primaryAddress
-                                                    ?.address1 ?? ""}",
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.w700
-                                                ),),
-                                            ),
-                                            const SizedBox(width: 5,),
-                                            const Icon(
-                                                Icons.keyboard_arrow_down_sharp),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          width: width / 2.7,
-                                          child: Text(
-                                            logic.userModel?.primaryAddress?.address2 ??
-                                                "",
-                                            maxLines: 1,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: const TextStyle(
-                                                fontSize: 12
-                                            ),),
-                                        ),
-                                      ],
-                                    ),
-
-                                    const Spacer(),
-
-                                    Row(
-                                      children: [
-                                        // Container(
-                                        //     width: 35,
-                                        //     height: 35,
-                                        //     decoration: BoxDecoration(
-                                        //       color: Colors.white,
-                                        //       borderRadius: BorderRadius.circular(5),
-                                        //       boxShadow: [
-                                        //         const BoxShadow(
-                                        //           color: Color(0xffDDDDDD),
-                                        //           blurRadius: 6.0,
-                                        //           spreadRadius: 2.0,
-                                        //           offset: Offset(0.0, 0.0),
-                                        //         )
-                                        //       ],
-                                        //     ),
-                                        //     child: const Icon(
-                                        //       Icons.translate, color: Colors
-                                        //         .black,)),
-
-                                        InkWell(
-                                          onTap: () {
-                                            Get.toNamed(rsCartPage);
-                                          },
-                                          child: Container(
-                                              width: 40,
-                                              height: 40,
-                                              margin: const EdgeInsets.only(left: 10),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(
-                                                    20),
-                                                boxShadow: [
-                                                  const BoxShadow(
-                                                    color: Color(0xffDDDDDD),
-                                                    blurRadius: 6.0,
-                                                    spreadRadius: 2.0,
-                                                    offset: Offset(0.0, 0.0),
-                                                  )
-                                                ],
-                                              ),
-                                              child: Icon(Icons.shopping_cart,
-                                                color: AppColors.blackColor(),)),
-                                        ),
-
-                                        InkWell(
-                                          onTap: () {
-                                            Get.toNamed(rsProfilePage);
-                                          },
-                                          child: Container(
-                                              width: 40,
-                                              height: 40,
-                                              margin: const EdgeInsets.only(left: 10),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(
-                                                    20),
-                                                // boxShadow: [
-                                                //   const BoxShadow(
-                                                //     color: Color(0xffDDDDDD),
-                                                //     blurRadius: 6.0,
-                                                //     spreadRadius: 2.0,
-                                                //     offset: Offset(0.0, 0.0),
-                                                //   )
-                                                // ],
-                                              ),
-                                              child: CommonImage(
-                                                width: 40,
-                                                height: 40,
-                                                radius: 40,
-                                                assetPlaceholder: appUser,
-                                                imageUrl: "${ApiProvider.url}/${logic
-                                                    .userModel?.image}",
-                                              )),
-                                        ),
-                                      ],
-                                    ),
-
-                                  ],
-                                );
-                              },
-                            ),
-                          ),
-                        ),
 
                         Container(
                           padding: const EdgeInsets.symmetric(
@@ -647,11 +670,11 @@ class _HomePageState extends State<HomePage> {
                                                             logic.featureList[index]
                                                                 .featureCats?[i]
                                                                 .name ?? "",
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                                 fontWeight: FontWeight
                                                                     .bold
                                                             ),),
-                                                          Text("Feel The Aroma",
+                                                          const Text("Feel The Aroma",
                                                             style: TextStyle(
                                                                 fontWeight: FontWeight
                                                                     .normal
@@ -687,11 +710,11 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                           ),
                                                           Text(
-                                                            "Starting from \u{20b9} ${logic
+                                                            "Starting from ${PriceConverter.getFlag()} ${logic
                                                                 .featureList[index]
                                                                 .featureCats?[i]
                                                                 .minCharges}",
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                                 fontWeight: FontWeight
                                                                     .normal
                                                             ),),

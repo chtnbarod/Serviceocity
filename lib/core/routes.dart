@@ -18,7 +18,6 @@ import '../view/account/view.dart';
 import '../view/address/view.dart';
 import '../view/base/view.dart';
 import '../view/cart/view.dart';
-import '../view/category/view.dart';
 import '../view/checkout/view.dart';
 import '../view/home/view.dart';
 import '../view/login/view.dart';
@@ -29,11 +28,15 @@ import '../view/offer/view.dart';
 import '../view/profile/binding.dart';
 import '../view/profile/view.dart';
 import '../view/refer/view.dart';
+import '../view/service/binding.dart';
+import '../view/service/view.dart';
 import '../view/service_detail/view.dart';
 import '../view/signup/view.dart';
 import '../view/splash/binding.dart';
 import '../view/splash/view.dart';
 import '../view/time_slots/view.dart';
+import '../view/wallet/binding.dart';
+import '../view/wallet/view.dart';
 
 /// application routes name
 const String rsDefaultPage = "/";
@@ -42,7 +45,7 @@ const String rsHomePage = "/Home";
 const String rsLoginPage = "/Login";
 const String rsSignupPage = "/Signup";
 const String rsVerifyOtpPage = "/VerifyOtp";
-const String rsCategoryPage = "/CategoryPage";
+const String rsService = "/Service";
 const String rsServiceDetailPage = "/ServiceDetailPage";
 const String rsProfilePage = "/ProfilePage";
 const String rsCartPage = "/CartPage";
@@ -52,6 +55,7 @@ const String rsAccountPage = "/AccountPage";
 const String rsCheckoutPage = "/CheckoutPage";
 const String rsTimeSlotsPage = "/TimeSlotsPage";
 const String rsReferPage = "/ReferPage";
+const String rsWalletPage = "/WalletPage";
 // const String rsOfferPage = "/OfferPage";
 
 class Routes{
@@ -65,13 +69,14 @@ class Routes{
     GetPage(name: rsLoginPage, page: () => const LoginPage(),binding: LoginBinding()),
     GetPage(name: rsVerifyOtpPage, page: () =>  const VerifyOtpPage(),binding: VerifyOtpBinding()),
     GetPage(name: rsSignupPage, page: () => const SignupPage(),binding: SignupBinding()),
-    GetPage(name: rsCategoryPage, page: () => const CategoryPage(),binding: CategoryBinding()),
+    GetPage(name: rsService, page: () => const ServicePage(),binding: ServiceBinding()),
     GetPage(name: rsServiceDetailPage, page: () => const ServiceDetailPage(),binding: ServiceDetailBinding()),
     GetPage(name: rsProfilePage, page: () => const ProfilePage(),binding: ProfileBinding()),
     GetPage(name: rsCartPage, page: () => const CartPage(),binding: CartBinding()),
     GetPage(name: rsAddressPage, page: () => const AddressPage(),binding: AddressBinding()),
     GetPage(name: rsAddressPage, page: () => const CheckoutPage(),binding: AddressBinding()),
     GetPage(name: rsReferPage, page: () => const ReferPage(),binding: ReferBinding()),
+    GetPage(name: rsWalletPage, page: () => const WalletPage(),binding: WalletBinding()),
 
     GetPage(name: rsAccountPage, page: () => const AccountPage()),
 

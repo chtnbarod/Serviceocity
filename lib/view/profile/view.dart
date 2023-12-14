@@ -126,9 +126,12 @@ class ProfilePage extends StatelessWidget {
               title: "My Rating",
               icon: Icons.star,
             ),
-            const MenuItem(
+            MenuItem(
               title: "My Wallet",
               icon: Icons.account_balance_wallet,
+              onClick: (){
+                Get.toNamed(rsWalletPage);
+              },
             ),
             const MenuItem(
               title: "Scheduling Booking",

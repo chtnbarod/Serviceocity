@@ -32,7 +32,7 @@ class SplashLogic extends GetxController {
   // for web only
   login(){
     Get.find<AccountLogic>().saveLoginData(
-        "45|J8zV5Un6GaIYtXd57lZL9juhd04S0wwQOGgYhIfP410ab758",
+        "59|6ifbDnbt3p6AAQ2Jr5RxvwBj5jd9XZNX1VOu41x8ec53c81e",
         {
           "id": 21,
           "name": "chetan",

@@ -11,6 +11,7 @@ class ApiProvider{
   static const String addAddress = 'address';
   static const String updateAddress = 'updateaddress';
   static const String setPrimaryAddress = 'addressprimry';
+  static const String deleteAddress = 'deleteAddress';
 
 
   static const String getCategories = 'categories';

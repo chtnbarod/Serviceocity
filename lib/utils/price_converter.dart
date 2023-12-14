@@ -53,6 +53,9 @@ class PriceConverter {
           discount = d;
         }
       }
+      if(offerJson['type'] == 'percent'){
+         discount = (price2 * (double.tryParse(offerJson['percent'].toString())??0)) / 100;
+      }
     }
 
    return CheckoutData(
@@ -94,11 +97,11 @@ class PriceConverter {
 
 
   static String removeDecimalZeroFormatWithFlag(double value , { int asFixed = 2 }) {
-    return "\u{20B9}${value.toStringAsFixed(asFixed)}";
+    return "${getFlag()}${value.toStringAsFixed(asFixed)}";
   }
 
   static String getFlag() {
-    return "\u{20B9}";
+    return  "₹";
   }
 
 }

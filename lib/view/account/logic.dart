@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:serviceocity/core/di/api_client.dart';
 import 'package:serviceocity/model/UserModel.dart';
 import 'package:serviceocity/utils/toast.dart';
+import 'package:serviceocity/view/home/logic.dart';
 
 import '../../core/di/api_provider.dart';
 import '../../core/routes.dart';
@@ -38,7 +39,8 @@ class AccountLogic extends GetxController implements GetxService{
     await apiClient.postAPI("${ApiProvider.setPrimaryAddress}/${userModel?.myaddress?[index].id}", {}).then((value) => {
       if(value.statusCode == 200){
         userModel?.primaryAddress = PrimaryAddress.fromJson(value.body['data']),
-        Toast.show(toastMessage: value.body['message'])
+        Toast.show(toastMessage: value.body['message']),
+        Get.find<HomeLogic>().pullRefresh(notify: true),
       }
     }).whenComplete(() => {
       updatingPrimaryIndex = null,
@@ -118,7 +120,7 @@ class AccountLogic extends GetxController implements GetxService{
   }
 
   bool addingNow = false;
-  Future<void> addAddress({dynamic address, bool useUpdate = true}) async{
+  Future<void> addAddress({dynamic address, bool useUpdate = true, bool makePrimary = false}) async{
     addingNow = true;
     update();
     await apiClient.postAPI(ApiProvider.addAddress, address).then((value) => {
@@ -127,6 +129,9 @@ class AccountLogic extends GetxController implements GetxService{
         Toast.show(toastMessage: value.body['message']),
         if(userModel!.myaddress == null){
           userModel!.myaddress = [],
+        },
+        if(makePrimary){
+          userModel!.primaryAddress = PrimaryAddress.fromJson(value.body['data']),
         },
         userModel!.myaddress!.add(Myaddress.fromJson(value.body['data'])),
       },
@@ -160,7 +165,7 @@ class AccountLogic extends GetxController implements GetxService{
     await apiClient.sharedPreferences.setString(ApiProvider.preferencesToken,token);
     userModel = UserModel.fromJson(json);
     if(GetPlatform.isWeb){
-      Get.offAllNamed(rsReferPage);
+      Get.offAllNamed(rsWalletPage);
     }else{
       Get.offAllNamed(rsBasePage);
     }
@@ -172,6 +177,24 @@ class AccountLogic extends GetxController implements GetxService{
     await apiClient.sharedPreferences.remove(ApiProvider.preferencesToken);
     //await FirebaseMessaging.instance.deleteToken();
     Get.offAllNamed(rsLoginPage);
+  }
+
+  int deleting = -1;
+  deleteAddress({ required int index }) async{
+    deleting = index;
+    update();
+    await apiClient.postAPI("${ApiProvider.deleteAddress}/${userModel?.myaddress?[index].id}", {}).then((value) => {
+      if(value.statusCode == 200){
+        userModel?.myaddress?.removeAt(index),
+        Toast.show(toastMessage: value.body['message']??"Deleted")
+      }else{
+        Toast.show(toastMessage: value.body['error']??"Try Again")
+      }
+    }).whenComplete(() => {
+      deleting = -1,
+      update()
+    });
+
   }
 
 }

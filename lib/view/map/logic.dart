@@ -1,7 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:serviceocity/view/map/AddressListModel.dart';
 
 import '../../utils/assets.dart';
 
@@ -14,73 +17,64 @@ class MyMapLogic extends GetxController{
     _controller = controller;
   }
 
-  Placemark? place;
+  AddressListModel? addressListModel;
 
   Set<Marker> markers = {};
   MarkerId markerId = const MarkerId("MARKER@1");
 
-  double lat = 22.715651896922722;
-  double long = 75.83822440518583;
+  LatLng latLng = const LatLng(22.715651896922722,75.83822440518583);
 
   void initMap({ double? lat, double? long }){
-    print("latlatlat $lat");
     if(lat != null && long != null){
-      this.lat = lat;
-      this.long = long;
+      latLng = LatLng(lat,long);
     }
     markers.add(
       Marker(markerId: markerId,
-        position: LatLng(this.lat,this.long),
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),),);
-    update();
+        position: latLng,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),),);
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        getAddressLocation();
+      });
   }
 
   void onCameraMove(LatLng position){
-    lat = position.latitude;
-    long = position.longitude;
+    latLng = position;
 
     markers.clear();
     markers.add(
       Marker(markerId: markerId,
         position: position,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),),);
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),),);
 
-    _moveToLocation(position);
-    update();
+    _moveToLocation();
     getAddressLocation();
   }
 
   // Function to move the camera to a specific location
-  Future<void> _moveToLocation(LatLng location) async {
+  Future<void> _moveToLocation() async {
     if (_controller != null) {
-      await _controller?.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(
-          target: location,
-          zoom: 15.0, // You can set the desired zoom level
-        ),
+      double zoomLevel = await _controller!.getZoomLevel();
+      await _controller!.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: latLng,zoom: zoomLevel),
       ));
     }
   }
 
   bool process = false;
   Future<void> getAddressLocation() async{
-    print("STEP::A");
     if(process) return;
     process = true;
     update();
-    await placemarkFromCoordinates(lat, long).then((value) => {
-      place = value[0],
-      update(),
-      print("STEP::AC $value"),
-    },onError: (e){
-      print("STEP::AM $e");
-    }).catchError((e){
-      process = false;
-      print("STEP::Ax $e");
+
+    await Dio().get("https://maps.googleapis.com/maps/api/geocode/json?latlng=${latLng.latitude},${latLng.longitude}&key=$googleAPIKey").then((value) => {
+      if(value.data["status"] == "OK"){
+        addressListModel = getCity(value.data['results']),
+      },
     }).whenComplete(() => {
       process = false,
+      print("addressListModel ${addressListModel?.toJson()}"),
       update(),
-      print("STEP::AZ")
     });
   }
 
@@ -93,5 +87,45 @@ class MyMapLogic extends GetxController{
     });
   }
 
+  AddressListModel getCity(dynamic json){
+    String city = "";
+    String state = "";
+    String country = "";
+    json[0]['address_components'].forEach((v) {
+      if(v['types'][0] == 'administrative_area_level_1'){
+        state = v['long_name'];
+      }
+      if(v['types'][0] == 'administrative_area_level_3'){
+        city = v['long_name'];
+      }
+      if(v['types'][0] == 'country'){
+        country = v['long_name'];
+      }
+    });
 
+    if(city.isEmpty){
+      json[1]['address_components'].forEach((v) {
+        if(v['types'][0] == 'administrative_area_level_3'){
+          city = v['long_name'];
+        }
+      });
+    }
+
+    if(city.isEmpty){
+      json[2]['address_components'].forEach((v) {
+        if(v['types'][0] == 'administrative_area_level_3'){
+          city = v['long_name'];
+        }
+      });
+    }
+
+    return AddressListModel.fromJson({
+      "address1" : json[0]['formatted_address'],
+      "city" : city,
+      "state" : state,
+      "country" : country,
+      "latitude" : latLng.latitude,
+      "longitude" : latLng.longitude
+    });
+  }
 }

@@ -5,9 +5,9 @@ import 'package:serviceocity/model/ServiceModel.dart';
 
 import '../../core/di/api_client.dart';
 
-class CategoryLogic extends GetxController {
+class ServiceLogic extends GetxController {
   final ApiClient apiClient;
-  CategoryLogic({required this.apiClient});
+  ServiceLogic({required this.apiClient});
 
   dynamic argumentData = Get.arguments;
 
@@ -46,15 +46,22 @@ class CategoryLogic extends GetxController {
   }
 
   List<ChildCategoryModel> category = [];
+  bool iaRefreshing = false;
   getChildCategory() async{
+    if(iaRefreshing) return;
     category.clear();
+    iaRefreshing = true;
+    print("ABC: count");
     update();
     await apiClient.getAPI("${ApiProvider.getChildCategories}?category_id=$categoryId&sub_category_id=$subCategoryId").then((value) => {
       value.body['data'].forEach((v) {
         category.add(ChildCategoryModel.fromJson(v));
       }),
       initData()
-    }).whenComplete(() => update());
+    }).whenComplete(() => {
+      iaRefreshing = false,
+      update(),
+    });
   }
 
   List<ServiceModel> service = [];

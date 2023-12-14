@@ -158,7 +158,7 @@ class Myaddress {
       this.isPrimary, 
       this.createdAt, 
       this.updatedAt, 
-      this.deletedAt,});
+      this.deletedAt});
 
   Myaddress.fromJson(dynamic json) {
    try{
@@ -174,10 +174,10 @@ class Myaddress {
      longitude = double.tryParse(json['longitude'].toString());
      state = json['state'];
      country = json['country'];
-     cityId = json['city_id'];
-     zoneId = json['zone_id'];
-     isActive = json['is_active'];
-     isPrimary = json['is_primary'];
+     cityId = int.tryParse(json['city_id'].toString());
+     zoneId = int.tryParse(json['zone_id'].toString());
+     isActive = int.tryParse(json['is_active'].toString());
+     isPrimary = int.tryParse(json['is_primary'].toString());
      createdAt = json['created_at'];
      updatedAt = json['updated_at'];
      deletedAt = json['deleted_at'];
@@ -188,7 +188,7 @@ class Myaddress {
   int? id;
   String? userId;
   String? address1;
-  dynamic address2;
+  String? address2;
   String? name;
   String? landmark;
   String? type;
@@ -197,13 +197,13 @@ class Myaddress {
   double? longitude;
   String? state;
   String? country;
-  String? cityId;
-  dynamic zoneId;
-  String? isActive;
-  String? isPrimary;
+  int? cityId;
+  int? zoneId;
+  int? isActive;
+  int? isPrimary;
   String? createdAt;
   String? updatedAt;
-  dynamic deletedAt;
+  String? deletedAt;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -387,30 +387,34 @@ class Address {
       this.deletedAt,});
 
   Address.fromJson(dynamic json) {
-    id = json['id'];
-    userId = json['user_id'];
-    address1 = json['address1'];
-    address2 = json['address2'];
-    name = json['name'];
-    landmark = json['landmark'];
-    type = json['type'];
-    city = json['city'];
-    latitude = double.tryParse(json['latitude'].toString());
-    longitude = double.tryParse(json['longitude'].toString());
-    state = json['state'];
-    country = json['country'];
-    cityId = json['city_id'];
-    zoneId = json['zone_id'];
-    isActive = json['is_active'];
-    isPrimary = json['is_primary'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    try{
+      id = json['id'];
+      userId = json['user_id'];
+      address1 = json['address1'];
+      address2 = json['address2'];
+      name = json['name'];
+      landmark = json['landmark'];
+      type = json['type'];
+      city = json['city'];
+      latitude = double.tryParse(json['latitude'].toString());
+      longitude = double.tryParse(json['longitude'].toString());
+      state = json['state'];
+      country = json['country'];
+      cityId = int.tryParse(json['city_id'].toString());
+      zoneId = int.tryParse(json['zone_id'].toString());
+      isActive = int.tryParse(json['is_active'].toString());
+      isPrimary = int.tryParse(json['is_primary'].toString());
+      createdAt = json['created_at'];
+      updatedAt = json['updated_at'];
+      deletedAt = json['deleted_at'];
+    }catch(e){
+      //
+    }
   }
   int? id;
   String? userId;
   String? address1;
-  dynamic address2;
+  String? address2;
   String? name;
   String? landmark;
   String? type;
@@ -419,10 +423,10 @@ class Address {
   double? longitude;
   String? state;
   String? country;
-  String? cityId;
-  dynamic zoneId;
-  String? isActive;
-  String? isPrimary;
+  int? cityId;
+  int? zoneId;
+  int? isActive;
+  int? isPrimary;
   String? createdAt;
   String? updatedAt;
   dynamic deletedAt;

@@ -132,8 +132,8 @@ class ServiceDetailPage extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const Text("\u{20B9} ",
-                        style: TextStyle(
+                        Text("${PriceConverter.getFlag()} ",
+                        style: const TextStyle(
                           color: AppColors.primary
                         ),),
                         Text("Start @${PriceConverter.salePrice2(

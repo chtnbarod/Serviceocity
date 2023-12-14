@@ -12,12 +12,12 @@ import 'package:serviceocity/widget/custom_button.dart';
 
 import '../../utils/assets.dart';
 import '../../widget/custom_input.dart';
+import 'AddressListModel.dart';
 
 class MyMap extends StatefulWidget {
-  final double? lat;
-  final double? long;
-  final Function(dynamic json)? callback;
-  const MyMap({super.key, this.callback,this.lat,this.long});
+  final AddressListModel? addressListModel;
+  final Function(AddressListModel addressListModel)? callback;
+  const MyMap({super.key, this.callback,this.addressListModel,});
 
   @override
   State<MyMap> createState() => _MyMapState();
@@ -28,11 +28,16 @@ class _MyMapState extends State<MyMap> {
 
   @override
   void initState() {
-    Get.find<MyMapLogic>().initMap(lat: widget.lat,long: widget.long);
+    if(widget.addressListModel != null){
+      nameController.text = widget.addressListModel?.name??"";
+      landmarkController.text = widget.addressListModel?.landmark??"";
+      address2Controller.text = widget.addressListModel?.address2??"";
+    }
+
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Get.find<MyMapLogic>().getAddressLocation();
-    });
+    Get.find<MyMapLogic>().initMap(lat: widget.addressListModel?.latitude,
+        long: widget.addressListModel?.longitude);
+
   }
 
   TextEditingController controller = TextEditingController();
@@ -59,16 +64,14 @@ class _MyMapState extends State<MyMap> {
             builder: (logic) {
               return Stack(
                 children: [
+
                   Column(
                     children: [
 
-
                       Flexible(
                         child: GoogleMap(
-                          myLocationEnabled: true,
-                          initialCameraPosition: CameraPosition(
-                              target: LatLng(logic.lat, logic.long),
-                              zoom: 15),
+                          myLocationEnabled: false,
+                          initialCameraPosition: CameraPosition(target: logic.latLng, zoom: 10),
                           mapType: MapType.normal,
                           onMapCreated: logic.onMapCreated,
                           markers: logic.markers,
@@ -102,10 +105,10 @@ class _MyMapState extends State<MyMap> {
                                   ),
                                 ),
 
-                                if(logic.place != null)
+                                if(logic.addressListModel != null)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 10),
-                                    child: Text("${logic.place?.subLocality??""} ${logic.place?.thoroughfare??""}, ${logic.place?.postalCode ?? ""}".trim()),
+                                    child: Text(logic.addressListModel?.address1??""),
                                   ),
 
                                 const SizedBox(height: 20,),
@@ -146,20 +149,13 @@ class _MyMapState extends State<MyMap> {
                                       text: "Home",
                                       horizontalPadding: 20,
                                       onTap: () {
-                                        if(widget.callback != null){
-                                          widget.callback!(
-                                              {
-                                                "address1": "${logic.place!.subLocality??""} ${logic.place!.thoroughfare??""}, ${logic.place!.postalCode ?? ""}".trim(),
-                                                "city": logic.place!.locality,
-                                                "latitude": logic.lat,
-                                                "longitude": logic.long,
-                                                "state": logic.place!.administrativeArea,
-                                                "country": logic.place!.country,
-                                                "type": "home",
-                                                "landmark": landmarkController.text,
-                                                "name": nameController.text,
-                                                "address2": address2Controller.text,
-                                              }
+                                        if(widget.callback != null && logic.addressListModel != null){
+                                          widget.callback!(logic.addressListModel!
+                                            ..id = widget.addressListModel?.id
+                                            ..type = "Home"
+                                            ..address2 = address2Controller.text
+                                            ..landmark = landmarkController.text
+                                            ..name = nameController.text
                                           );
                                           Get.back();
                                         }
@@ -171,20 +167,13 @@ class _MyMapState extends State<MyMap> {
                                       text: "Office",
                                       horizontalPadding: 20,
                                       onTap: () {
-                                        if(widget.callback != null){
-                                          widget.callback!(
-                                              {
-                                                "address1": "${logic.place!.subLocality??""} ${logic.place!.thoroughfare??""}, ${logic.place!.postalCode ?? ""}".trim(),
-                                                "city": logic.place!.locality,
-                                                "latitude": logic.lat,
-                                                "longitude": logic.long,
-                                                "state": logic.place!.administrativeArea,
-                                                "country": logic.place!.country,
-                                                "type": "office",
-                                                "landmark": landmarkController.text,
-                                                "name": nameController.text,
-                                                "address2": address2Controller.text,
-                                              }
+                                        if(widget.callback != null && logic.addressListModel != null){
+                                          widget.callback!(logic.addressListModel!
+                                            ..id = widget.addressListModel?.id
+                                            ..type = "Office"
+                                            ..address2 = address2Controller.text
+                                            ..landmark = landmarkController.text
+                                            ..name = nameController.text
                                           );
                                           Get.back();
                                         }
@@ -196,20 +185,13 @@ class _MyMapState extends State<MyMap> {
                                       height: 30,
                                       text: "Other",
                                       onTap: () {
-                                        if(widget.callback != null){
-                                          widget.callback!(
-                                              {
-                                                "address1": "${logic.place!.subLocality??""} ${logic.place!.thoroughfare??""}, ${logic.place!.postalCode ?? ""}".trim(),
-                                                "city": logic.place!.locality,
-                                                "latitude": logic.lat,
-                                                "longitude": logic.long,
-                                                "state": logic.place!.administrativeArea,
-                                                "country": logic.place!.country,
-                                                "type": "other",
-                                                "landmark": landmarkController.text,
-                                                "name": nameController.text,
-                                                "address2": address2Controller.text,
-                                              }
+                                        if(widget.callback != null && logic.addressListModel != null){
+                                          widget.callback!(logic.addressListModel!
+                                            ..id = widget.addressListModel?.id
+                                            ..type = "Other"
+                                            ..address2 = address2Controller.text
+                                            ..landmark = landmarkController.text
+                                            ..name = nameController.text
                                           );
                                           Get.back();
                                         }
@@ -270,6 +252,7 @@ class _MyMapState extends State<MyMap> {
                       ),
                     ),
                   ),
+
                 ],
               );
             },

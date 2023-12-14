@@ -120,7 +120,7 @@ class CheckoutPage extends StatelessWidget {
                             fontWeight: FontWeight.w500
 
                         ),),
-                      Text("\u{20b9}${logic.checkoutData.price}",
+                      Text("${PriceConverter.getFlag()}${logic.checkoutData.price}",
                         style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 15
@@ -148,7 +148,7 @@ class CheckoutPage extends StatelessWidget {
                               ),),
                           ],
                         ),
-                        Text("\u{20b9}${logic.checkoutData.discount}",
+                        Text("${PriceConverter.getFlag()}${logic.checkoutData.discount}",
                           style: const TextStyle(
                               fontWeight: FontWeight.w500,
                               fontSize: 15,
@@ -170,7 +170,7 @@ class CheckoutPage extends StatelessWidget {
                             fontWeight: FontWeight.w500
 
                         ),),
-                      Text("\u{20b9}${logic.checkoutData.tax}",
+                      Text("${PriceConverter.getFlag()}${logic.checkoutData.tax}",
                         style: const TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 15
@@ -197,7 +197,7 @@ class CheckoutPage extends StatelessWidget {
                             fontWeight: FontWeight.bold
 
                         ),),
-                      Text("\u{20b9}${logic.checkoutData.total}",
+                      Text("${PriceConverter.getFlag()}${logic.checkoutData.total}",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15
@@ -220,7 +220,7 @@ class CheckoutPage extends StatelessWidget {
                         Icon(Icons.discount, color: Colors.green.shade900,),
                         const SizedBox(width: 10,),
                         Text(
-                            "Yeh! You have saved \u{20b9}${logic.checkoutData.discount} on final bill")
+                            "Yeh! You have saved ${PriceConverter.getFlag()}${logic.checkoutData.discount} on final bill")
                       ],
                     ),
                   ),

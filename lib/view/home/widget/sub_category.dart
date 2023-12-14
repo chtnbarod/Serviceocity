@@ -30,7 +30,7 @@ class SubCategory extends StatelessWidget {
             children: [
 
              if(logic.isGetFubCategories)
-              SizedBox(
+              const SizedBox(
                 height: 2,
                 child: LinearProgressIndicator(),
               ),
@@ -48,7 +48,7 @@ class SubCategory extends StatelessWidget {
                 itemBuilder: (BuildContext context, int index) {
                   return GridSubCategory(categoryModel: logic.subCategories[index],onTap: (){
                     Get.back();
-                    Get.toNamed(rsCategoryPage,arguments: {
+                    Get.toNamed(rsService,arguments: {
                       'category_id' : logic.subCategories[index].id,
                       'sub_category_id' : categoryId,
                     });

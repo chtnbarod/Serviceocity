@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:serviceocity/core/di/api_provider.dart';
 import 'package:serviceocity/widget/common_image.dart';
 
+import '../../utils/price_converter.dart';
 import 'logic.dart';
 
 class OfferPage extends StatelessWidget {
@@ -57,7 +58,7 @@ class OfferPage extends StatelessWidget {
                                 height: 50,
                                 width: 50,
                                 radius: 10,
-                                imageUrl: ApiProvider.url+"/"+"${logic.discounts[index].banner}",
+                                imageUrl: "${ApiProvider.url}/${logic.discounts[index].banner}",
                               ),
 
                               const SizedBox(width: 20,),
@@ -67,7 +68,8 @@ class OfferPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
 
-                                    Text("Cashback up to \u{20b9}${logic.discounts[index].amount??""}",
+                                   if(logic.discounts[index].type == "amount")
+                                    Text("Cashback up to ${PriceConverter.getFlag()}${logic.discounts[index].amount??""}",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
@@ -75,7 +77,16 @@ class OfferPage extends StatelessWidget {
                                       fontSize: 17
                                     ),),
 
-                                    Text("${logic.discounts[index].code??""}",
+                                    if(logic.discounts[index].type == "percent")
+                                      Text("Cashback up to ${PriceConverter.getFlag()}${logic.discounts[index].percent??""}%",
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 17
+                                        ),),
+
+                                    Text(logic.discounts[index].code??"",
                                       style: const TextStyle(
                                           fontSize: 14
                                       ),),
