@@ -4,12 +4,13 @@ import 'package:get/get.dart';
 class NotFound extends StatelessWidget {
   final String? message;
   final IconData? iconData;
-  const NotFound({super.key,this.message,this.iconData});
+  final bool isExpand;
+  const NotFound({super.key,this.message,this.iconData,this.isExpand = true});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: (Get.height*0.55)+kToolbarHeight,
+      height: isExpand ? (Get.height*0.55)+kToolbarHeight : null,
       alignment: Alignment.center,
       child: Center(
         child: Column(

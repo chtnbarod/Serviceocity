@@ -11,6 +11,7 @@ import 'package:serviceocity/view/home/widget/order.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:serviceocity/view/home/widget/sub_category.dart';
 import 'package:serviceocity/view/map/AddressListModel.dart';
+import 'package:serviceocity/widget/bottom_sheet.dart';
 
 import '../../core/routes.dart';
 import '../../utils/assets.dart';
@@ -512,11 +513,13 @@ class _HomePageState extends State<HomePage> {
                                       logic.getSubCategory(
                                           logic.categories[index].id);
                                       Get.bottomSheet(
-                                        SubCategory(
-                                            categoryId: logic.categories[index].id),
+                                        buildBottomSheet(
+                                          child: SubCategory(
+                                              categoryId: logic.categories[index].id),
+                                        ),
                                         enableDrag: true,
                                         isScrollControlled: true,
-                                        barrierColor: Colors.transparent,
+                                        barrierColor: Colors.black38,
                                         isDismissible: false,
                                       );
                                     },);

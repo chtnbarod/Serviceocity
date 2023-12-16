@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:serviceocity/view/category/widget/vertical_addon.dart';
+import 'package:serviceocity/view/service/widget/vertical_addon.dart';
 
 import '../../../model/ServiceModel.dart';
 
@@ -17,8 +17,10 @@ class AddonsService extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20)
+          )
       ),
       padding: const EdgeInsets.all(20),
       child: ListView.builder(

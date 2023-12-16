@@ -7,6 +7,7 @@ class ApiProvider{
   static const String login = 'login';
   static const String register = 'register';
   static const String user = 'profile';
+  static const String viewWallet = 'viewwallet';
   static const String updateProfile = 'updateprofile';
   static const String addAddress = 'address';
   static const String updateAddress = 'updateaddress';
@@ -24,6 +25,8 @@ class ApiProvider{
   static const String allBanners = 'allbanners';
   static const String getFeature = 'home';
 
+  static const String orderPlace = 'placeorder';
+
   // Cart APIs
   static const String addToCart = 'addtocart';
   static const String viewCart = 'viewcart';
@@ -32,6 +35,8 @@ class ApiProvider{
 
   // discount
   static const String getCouponDiscount = 'discount';
+  static const String applyCoupon = 'applydiscount?id=';
+  // https://serviceocitynewadmin.serviceocity.com/api/apply-discount?id=1
   static const String getTimeslots = 'gettimeslots';
 
   /// Session

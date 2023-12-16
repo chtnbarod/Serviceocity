@@ -35,6 +35,50 @@ class CartPage extends StatelessWidget {
         title: const Text("Cart"),
         centerTitle: true,
       ),
+      bottomNavigationBar: Container(
+        height: 60,
+        margin: const EdgeInsets.symmetric(horizontal: 10) ,
+        child: GetBuilder<CartLogic>(builder: (logic) {
+          return Column(
+            children: [
+
+             if(logic.cartModels.length > 1)
+              CustomButton(
+                color: AppColors.primaryColor(),
+                borderRadius: 5,
+                height: 50,
+                onTap: () {
+                  Get.toNamed(rsCheckoutPage);
+                },
+                label: Row(
+                  children: [
+                    Text("Proceed To Checkout", style: TextStyle(
+                      color: AppColors.whiteColor(),
+                      fontSize: 14,
+                      letterSpacing: -0.4,
+                      fontWeight: FontWeight.w400,
+                    ),),
+                    const SizedBox(width: 20,),
+                    Text("|", style: TextStyle(
+                      color: AppColors.whiteColor(),
+                      fontSize: 14,
+                      letterSpacing: -0.4,
+                      fontWeight: FontWeight.w400,
+                    ),),
+                    const SizedBox(width: 20,),
+                    Text("${logic.cartModels.length} Item", style: TextStyle(
+                      color: AppColors.whiteColor(),
+                      fontSize: 14,
+                      letterSpacing: -0.4,
+                      fontWeight: FontWeight.w400,
+                    ),),
+                  ],
+                ),
+              )
+            ],
+          );
+        }),
+      ),
       body: GetBuilder<CartLogic>(
         assignId: true,
         builder: (logic) {
@@ -147,7 +191,6 @@ class CartPage extends StatelessWidget {
                                             height: 40,
                                             borderRadius: 10,
                                             onTap: (){
-
                                               Get.toNamed(rsCheckoutPage,arguments: { "cart" : logic.cartModels[index].toJson() });
                                             },
                                           ),

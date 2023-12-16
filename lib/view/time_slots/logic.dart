@@ -6,6 +6,7 @@ import 'package:serviceocity/model/CartModel.dart';
 import 'package:serviceocity/model/UserModel.dart';
 import 'package:serviceocity/utils/toast.dart';
 import 'package:serviceocity/view/checkout/logic.dart';
+import 'package:serviceocity/view/thankyou/view.dart';
 
 import '../../core/di/api_client.dart';
 import '../../model/TimeslotsModel.dart';
@@ -35,9 +36,12 @@ class TimeSlotsLogic extends GetxController {
     update();
   }
 
-  orderNow(){
+
+  bool orderInProcess = false;
+  orderNow() async{
+
     if(address == null){
-      Toast.show(title: "Please Select Address",isError: true);
+      Toast.show(toastMessage: "Please Select Address",isError: true);
       return;
     }
 
@@ -51,20 +55,31 @@ class TimeSlotsLogic extends GetxController {
       return;
     }
 
-    CartModel? cartModel = Get.find<CheckoutLogic>().cartModel;
-    dynamic offer = Get.find<CheckoutLogic>().json;
+    // ThankYou
 
-    dynamic body = {
-      "address_id" : address?.id,
-      'service_id' : cartModel?.productId,
-      'coupon' : offer['code'],
-      'tax' : cartModel?.tax,
-      'date' : selectedDate,
-      'time' : selectedTime
-    };
+    orderInProcess = true;
+    update();
 
-    print("order::: $body");
+    dynamic body = Get.find<CheckoutLogic>().getOrderBody(
+      addressId: "${address?.id}",
+      date: selectedDate!,
+      time: selectedTime!
+    );
+
+    await apiClient.postAPI(ApiProvider.orderPlace, {"orders" : body}).then((value) => {
+      if(value.statusCode == 200){
+        Get.to(const ThankYouPage()),
+        Toast.show(toastMessage: value.body?['message']??"Order Successfully Place")
+      }else{
+        Toast.show(toastMessage: value.body?['message']??value.body?['error']??"Try Again",isError: true)
+      }
+    }).whenComplete(() => {
+      orderInProcess = false,
+      update()
+    });
   }
+
+
 
   List<TimeslotsModel> list = [];
   bool inProcess = false;

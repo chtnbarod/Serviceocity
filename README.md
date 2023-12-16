@@ -13,5 +13,23 @@ keytool -genkey -v -keystore "C:\Users\chtnb\Desktop\serviceocity.jks" -storetyp
 
 
 When category more than 10, so we should have option to see more in next screen
-In address screen not have a delete option  *DONE*
-In timeslot screen,  address not picking *DONE*
+tax and min order amount set by viewCart api
+add apply api
+show all coupon even user lime reach out
+timeslot should be in gridview
+change wallet UI
+set address not found in select address screen
+
+Task On Call
+
+change splash screen
+
+[//]: # (change cart button)
+add cart floating button in service list and detail screen
+add cancel policy in detail screen
+add cross button in bottom sheet
+
+
+
+
+

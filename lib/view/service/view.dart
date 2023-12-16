@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:serviceocity/core/di/api_provider.dart';
 import 'package:serviceocity/theme/app_colors.dart';
 import 'package:serviceocity/utils/assets.dart';
-import 'package:serviceocity/view/category/widget/vertical_service.dart';
+import 'package:serviceocity/view/service/widget/vertical_service.dart';
 import 'package:serviceocity/widget/not_found.dart';
 
 import '../../widget/common_image.dart';

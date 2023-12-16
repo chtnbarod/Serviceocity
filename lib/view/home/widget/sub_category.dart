@@ -19,25 +19,28 @@ class SubCategory extends StatelessWidget {
             maxHeight: Get.height/1.5,
             minHeight: Get.height/3,
           ),
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(),
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                topLeft: Radius.circular(20),
+              ),
           ),
-          padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
 
              if(logic.isGetFubCategories)
-              const SizedBox(
-                height: 2,
-                child: LinearProgressIndicator(),
+              Container(
+                height: 1,
+                margin: const EdgeInsets.only(left: 12,right: 12,top: 1),
+                child: const LinearProgressIndicator(),
               ),
 
              if(logic.subCategories.isNotEmpty)
               GridView.builder(
                 itemCount: logic.subCategories.length,
+                padding: const EdgeInsets.all(20),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     crossAxisSpacing: 4.0,

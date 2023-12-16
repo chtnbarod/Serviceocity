@@ -82,7 +82,7 @@ class CartLogic extends GetxController implements GetxService{
           cartModels[index].quantity = "${value.body['quantity']}",
         }
       }else{
-        Toast.show(toastMessage: value.body['message'] ?? "Try Again",isError: true)
+        Toast.show(toastMessage: value.body['error'] ?? "Try Again",isError: true)
       }
     }).whenComplete(() => {
       increaseIndex = null,
@@ -109,7 +109,7 @@ class CartLogic extends GetxController implements GetxService{
           },
         }
       }else{
-        Toast.show(toastMessage: value.body['message'] ?? "Try Again",isError: true)
+        Toast.show(toastMessage: value.body['error'] ?? "Try Again",isError: true)
       }
     }).whenComplete(() => {
       decreaseIndex = null,

@@ -165,7 +165,7 @@ class AccountLogic extends GetxController implements GetxService{
     await apiClient.sharedPreferences.setString(ApiProvider.preferencesToken,token);
     userModel = UserModel.fromJson(json);
     if(GetPlatform.isWeb){
-      Get.offAllNamed(rsWalletPage);
+      Get.offAllNamed(rsCartPage);
     }else{
       Get.offAllNamed(rsBasePage);
     }

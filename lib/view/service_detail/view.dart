@@ -7,9 +7,10 @@ import 'package:serviceocity/utils/date_converter.dart';
 import 'package:serviceocity/utils/price_converter.dart';
 import 'package:serviceocity/view/cart/increase_decrease_buttons.dart';
 import 'package:serviceocity/view/cart/logic.dart';
+import 'package:serviceocity/widget/bottom_sheet.dart';
 import 'package:serviceocity/widget/common_image.dart';
 
-import '../category/widget/addons_service.dart';
+import '../service/widget/addons_service.dart';
 import 'logic.dart';
 
 class ServiceDetailPage extends StatelessWidget {
@@ -105,10 +106,11 @@ class ServiceDetailPage extends StatelessWidget {
                         InkWell(
                             onTap: () {
                               Get.bottomSheet(
-                                AddonsService(list: logic.serviceDetailsModel?.addons),
+                                buildBottomSheet(
+                                    child: AddonsService(list: logic.serviceDetailsModel?.addons)),
                                 enableDrag: true,
                                 isScrollControlled: true,
-                                barrierColor: Colors.transparent,
+                                barrierColor: Colors.black38,
                                 isDismissible: false,
                               );
                             },

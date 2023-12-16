@@ -20,7 +20,7 @@ class VerticalAddon extends StatelessWidget {
         Get.toNamed(rsServiceDetailPage,arguments: { 'id' : addons?.id });
       },
       child: Container(
-        height: 130,
+        height: 110,
         decoration: BoxDecoration(
             border: Border.all(color: Colors.blue,width: 1),
             borderRadius: BorderRadius.circular(10)
@@ -64,6 +64,8 @@ class VerticalAddon extends StatelessWidget {
 
                         Flexible(
                           child: Text(addons?.name??"",
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                                 color: Colors.grey,
                                 fontSize: 10

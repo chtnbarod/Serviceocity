@@ -1,5 +1,6 @@
 // Images
 String appPlaceholder = "assets/images/placeholder.jpg";
+String walletCard = "assets/images/wallet_card.png";
 String appUser = "assets/images/user.png";
 
 // Strings

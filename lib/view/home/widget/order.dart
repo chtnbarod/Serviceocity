@@ -22,8 +22,8 @@ class Order extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: MediaQuery.of(context).size.width/1.5,
-            height: 130,
+            width: MediaQuery.of(context).size.width/1.7,
+            height: 110,
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.blue,width: 1),
                 borderRadius: BorderRadius.circular(10)
@@ -34,12 +34,12 @@ class Order extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 CommonImage(
-                  width: 90,
+                  width: 80,
                   height: 100,
                   imageUrl: "${ApiProvider.url}/${featureServices?.image?[0]??""}",
                 ),
 
-                const SizedBox(width: 10,),
+                const SizedBox(width: 15,),
                 Flexible(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,6 +77,8 @@ class Order extends StatelessWidget {
 
                       Flexible(
                         child: Text(featureServices?.name??"",
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                               color: Colors.grey,
                               fontSize: 10

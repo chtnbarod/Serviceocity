@@ -5,10 +5,11 @@ import 'package:serviceocity/model/ServiceModel.dart';
 import 'package:serviceocity/theme/app_colors.dart';
 import 'package:serviceocity/utils/date_converter.dart';
 import 'package:serviceocity/utils/price_converter.dart';
-import 'package:serviceocity/view/category/widget/addons_service.dart';
+import 'package:serviceocity/widget/bottom_sheet.dart';
 
 import '../../../core/routes.dart';
 import '../../../widget/common_image.dart';
+import 'addons_service.dart';
 
 class VerticalService extends StatelessWidget {
   final ServiceModel? serviceModel;
@@ -124,10 +125,10 @@ class VerticalService extends StatelessWidget {
             InkWell(
               onTap: () {
                 Get.bottomSheet(
-                  AddonsService(list: serviceModel?.addons),
+                  buildBottomSheet(child: AddonsService(list: serviceModel?.addons)),
                   enableDrag: true,
                   isScrollControlled: true,
-                  barrierColor: Colors.transparent,
+                  barrierColor: Colors.black38,
                   isDismissible: false,
                 );
               },

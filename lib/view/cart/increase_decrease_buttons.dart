@@ -33,9 +33,9 @@ class IncreaseDecreaseButtons extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.primary,width: 0.5),
         color: AppColors.primaryColor().withOpacity(0.1),
-        borderRadius: BorderRadius.circular(5)
+        borderRadius: BorderRadius.circular(10)
       ),
-      padding: EdgeInsets.symmetric(horizontal: 2,vertical: 2),
+      padding: const EdgeInsets.symmetric(horizontal: 2,vertical: 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -43,7 +43,16 @@ class IncreaseDecreaseButtons extends StatelessWidget {
             SizedBox(
                 width: (buttonSize),
                 height: (buttonSize),
-                child: CircularProgressIndicator(strokeWidth: 1,)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: (buttonSize/1.5),
+                        height: (buttonSize/1.5),
+                        child: const CircularProgressIndicator(strokeWidth: 1,color: AppColors.primary,)),
+                  ],
+                )),
           ]else...[
             CircleIconButton(
               onTap: onDecrease,
@@ -52,21 +61,33 @@ class IncreaseDecreaseButtons extends StatelessWidget {
             ),
           ],
           /// when i wrap Container in expanded then it is not working some time
-          Container(
+          SizedBox(
             // decoration: BoxDecoration(
             //     color: AppColors.primary,
             //     borderRadius: BorderRadius.all(Radius.circular(4))
             // ),
             height: (buttonSize),
             child: Center(
-              child: Text("${cartCount??0}"),
+              child: Text("${cartCount??0}",
+              style: const TextStyle(
+                color: AppColors.primary
+              ),),
             ),
           ),
           if((isIncrease ?? false))...[
             SizedBox(
                 width: (buttonSize),
                 height: (buttonSize),
-                child: CircularProgressIndicator(strokeWidth: 1,)),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                        width: (buttonSize/1.5),
+                        height: (buttonSize/1.5),
+                        child: const CircularProgressIndicator(strokeWidth: 1,color: AppColors.primary,)),
+                  ],
+                )),
           ]else...[
             CircleIconButton(
               onTap: onIncrease,

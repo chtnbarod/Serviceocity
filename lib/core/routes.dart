@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:serviceocity/view/account/binding.dart';
 import 'package:serviceocity/view/address/binding.dart';
 import 'package:serviceocity/view/cart/binding.dart';
-import 'package:serviceocity/view/category/binding.dart';
 import 'package:serviceocity/view/checkout/binding.dart';
 import 'package:serviceocity/view/login/binding.dart';
 import 'package:serviceocity/view/refer/binding.dart';
