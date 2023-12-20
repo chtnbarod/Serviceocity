@@ -29,7 +29,7 @@ class NotFound extends StatelessWidget {
                 Flexible(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50),
-                    child: Text((message ?? "Opp! Empty Data"),
+                    child: Text((message ?? "Opp! Not Found"),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                           color: Colors.black54

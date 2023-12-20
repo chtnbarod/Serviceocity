@@ -1,15 +1,15 @@
-import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:serviceocity/core/di/api_provider.dart';
-import 'package:serviceocity/model/CartModel.dart';
 import 'package:serviceocity/model/UserModel.dart';
 import 'package:serviceocity/utils/toast.dart';
 import 'package:serviceocity/view/checkout/logic.dart';
-import 'package:serviceocity/view/thankyou/view.dart';
 
 import '../../core/di/api_client.dart';
 import '../../model/TimeslotsModel.dart';
+import '../cart/logic.dart';
+import '../order_detail/binding.dart';
+import '../order_detail/view.dart';
 
 class TimeSlotsLogic extends GetxController {
   final ApiClient apiClient;
@@ -24,7 +24,7 @@ class TimeSlotsLogic extends GetxController {
 
   @override
   void onInit() {
-    categoryId = argumentData?['category_id'];
+    categoryId = Get.find<CartLogic>().cartModels.first.categoryId;
     super.onInit();
     getTimeSlot();
   }
@@ -68,10 +68,11 @@ class TimeSlotsLogic extends GetxController {
 
     await apiClient.postAPI(ApiProvider.orderPlace, {"orders" : body}).then((value) => {
       if(value.statusCode == 200){
-        Get.to(const ThankYouPage()),
+
+        Get.to(() => const OrderDetailPage(fromOrder: true,),binding: OrderDetailBinding(),arguments: { "order_id" : value.body['order_ids']  }),
         Toast.show(toastMessage: value.body?['message']??"Order Successfully Place")
-      }else{
-        Toast.show(toastMessage: value.body?['message']??value.body?['error']??"Try Again",isError: true)
+      }else if(value.statusCode == 404){
+        Toast.show(toastMessage: value.body?['message']??"Try Again",isError: true)
       }
     }).whenComplete(() => {
       orderInProcess = false,
@@ -83,17 +84,23 @@ class TimeSlotsLogic extends GetxController {
 
   List<TimeslotsModel> list = [];
   bool inProcess = false;
+  bool slotNotFound = false;
   getTimeSlot() async{
     list.clear();
     selectedTime = null;
     inProcess = true;
+    slotNotFound = false;
     update();
 
-    await apiClient.getAPI("${ApiProvider.getTimeslots}?category_id=1&selected_date=${getDate(day: selectedDate)}").then((value) => {
-      value.body.forEach((v) {
-        selectedDate ??= v['days'][0];
-        list.add(TimeslotsModel.fromJson(v));
-      }),
+    await apiClient.getAPI("${ApiProvider.getTimeslots}?category_id=$categoryId&selected_date=${getDate(day: selectedDate)}").then((value) => {
+      if(value.statusCode == 200){
+        value.body.forEach((v) {
+          selectedDate ??= v['days'][0];
+          list.add(TimeslotsModel.fromJson(v));
+        }),
+      }else if(value.statusCode == 404){
+        slotNotFound = true
+      }
     }).whenComplete(() => {
       inProcess = false,
       update(),

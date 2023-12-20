@@ -2,12 +2,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:serviceocity/core/di/api_provider.dart';
+import 'package:serviceocity/core/routes.dart';
 import 'package:serviceocity/theme/app_colors.dart';
 import 'package:serviceocity/utils/assets.dart';
+import 'package:serviceocity/view/cart/logic.dart';
 import 'package:serviceocity/view/service/widget/vertical_service.dart';
 import 'package:serviceocity/widget/not_found.dart';
 
+import '../../model/ServiceDetailsModel.dart';
 import '../../widget/common_image.dart';
+import '../../widget/custom_button.dart';
 import '../../widget/loader.dart';
 import 'logic.dart';
 
@@ -20,9 +24,79 @@ class ServicePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Service"),
-        centerTitle: true,
       ),
       backgroundColor: AppColors.whiteColor(),
+      bottomSheet: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+
+          GetBuilder<CartLogic>(
+            assignId: true,
+            builder: (logic) {
+              return
+                logic.cartModels.isEmpty && !logic.cartInProgress ? Container() :
+                Container(
+                  decoration: const BoxDecoration(
+                    border: Border(top: BorderSide(width: 0.5))
+                  ),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12, vertical: 5),
+                child: Column(
+                  children: [
+                    if(logic.cartInProgress)...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: LinearProgressIndicator(borderRadius: BorderRadius.circular(10),color: AppColors.primary,minHeight: 2,),
+                      )
+                    ],
+                    CustomButton(
+                      height: 40,
+                      isEnable: !logic.cartInProgress,
+                      label: Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 10,right: 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20)
+                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 2),
+                                child: Text("${logic.cartModels.length} Item",style: const TextStyle(
+                                  color: Colors.black
+                                ),),
+                              ),
+                              const Row(
+                                children: [
+                                  Icon(Icons.shopping_cart,color: Colors.white,),
+                                  SizedBox(width: 5,),
+                                  Text("View Cart",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold
+                                  ),),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      onTap:  () {
+                        Get.toNamed(rsCartPage)?.then((value) => {
+                           Get.find<ServiceLogic>().getChildCategory()
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+
+        ],
+      ),
       body: GetBuilder<ServiceLogic>(
         assignId: true,
         builder: (logic) {
@@ -39,6 +113,7 @@ class ServicePage extends StatelessWidget {
                     Expanded(
                       child: Row(
                         children: [
+
                           Container(
                             width: 100,
                             height: double.infinity,
@@ -115,7 +190,28 @@ class ServicePage extends StatelessWidget {
                                   child: ListView.builder(
                                     itemCount: logic.service.length,
                                     itemBuilder: (context, index) {
-                                      return VerticalService(serviceModel: logic.service[index],);
+                                      return VerticalService(
+                                        serviceModel: logic.service[index],
+                                        onRefresh: (){
+                                          logic.getChildCategory();
+                                        },
+                                        onUpdate: (dynamic json){
+                                          logic.service[index].cart?.quantity = "${json['quantity']}";
+                                          logic.update();
+                                        },
+                                        onAddToCart: (dynamic json){
+                                          logic.service[index].cart = Cart.fromJson(json);
+                                          logic.update();
+                                        },
+                                        onAddToCart2: (dynamic json,int i){
+                                          logic.service[index].addons![i].cart = Cart.fromJson(json);
+                                          logic.update();
+                                        },
+                                        onUpdate2: (dynamic json,int i){
+                                          logic.service[index].addons![i].cart?.quantity = "${json['quantity']}";
+                                          logic.update();
+                                        },
+                                      );
                                     },
                                   ),
                                 ),

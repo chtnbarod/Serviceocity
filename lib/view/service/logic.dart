@@ -4,6 +4,7 @@ import 'package:serviceocity/model/ChildCategoryModel.dart';
 import 'package:serviceocity/model/ServiceModel.dart';
 
 import '../../core/di/api_client.dart';
+import '../../utils/toast.dart';
 
 class ServiceLogic extends GetxController {
   final ApiClient apiClient;
@@ -79,5 +80,28 @@ class ServiceLogic extends GetxController {
       update(),
     });
   }
+
+  Future<void> updateCart({ required bool isIncrease, required int index }) async{
+    dynamic body = {};
+
+    if(isIncrease){
+      body =  {
+        "id" : service[index].cart?.id,
+        "quantity" : service[index].cart?.quantity,
+      };
+    }else{
+      body =  {
+        "id" : service[index].cart?.id,
+        "quantityminus" : service[index].cart?.quantity,
+      };
+    }
+
+    await apiClient.putAPI(ApiProvider.updateCart,body).then((value) => {
+      if(value.statusCode == 200){
+        service[index].cart?.quantity = "${value.body['quantity']}",
+      }
+    });
+  }
+
 
 }

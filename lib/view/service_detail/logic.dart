@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:serviceocity/model/ServiceDetailsModel.dart';
 import 'package:serviceocity/model/ServiceModel.dart';
+import 'package:serviceocity/view/cart/logic.dart';
 
 import '../../core/di/api_client.dart';
 import '../../core/di/api_provider.dart';
@@ -24,11 +25,14 @@ class ServiceDetailLogic extends GetxController {
 
 
   ServiceDetailsModel? serviceDetailsModel;
-
+  bool inProcess = true;
   getServiceDetails() async{
     await apiClient.getAPI("${ApiProvider.getServiceDetails}/$serviceId").then((value) => {
       serviceDetailsModel = ServiceDetailsModel.fromJson(value.body['data'])
-    }).whenComplete(() => update());
+    }).whenComplete(() => {
+      inProcess = false,
+      update()
+    });
   }
 
 
@@ -45,13 +49,11 @@ class ServiceDetailLogic extends GetxController {
       'quantity' : 1
     }).then((value) => {
       if(value.statusCode == 200){
-        Toast.show(toastMessage: "Added in cart"),
         serviceDetailsModel?.cart = Cart.fromJson(value.body),
-      }else{
-        Toast.show(toastMessage: value.body['error']??"internal server error")
       }
     }).whenComplete(() => {
       addInCart = false,
+      Get.find<CartLogic>().getCart(),
       update(),
     });
   }
@@ -83,9 +85,6 @@ class ServiceDetailLogic extends GetxController {
         }else{
           serviceDetailsModel?.cart?.quantity = "${value.body['quantity']}",
         },
-        Toast.show(toastMessage: "Successfully Quantity Updated"),
-      }else{
-        Toast.show(toastMessage: value.body['error'] ?? value.body['message'] ?? "Try Again",isError: true)
       }
     }).whenComplete(() => {
       this.isIncrease = false,

@@ -38,7 +38,6 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your Account"),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
         child: Padding(

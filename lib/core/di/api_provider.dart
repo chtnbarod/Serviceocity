@@ -26,6 +26,8 @@ class ApiProvider{
   static const String getFeature = 'home';
 
   static const String orderPlace = 'placeorder';
+  static const String userOrders = 'user_orders';
+  static const String orderDetails = 'user_orders_details';
 
   // Cart APIs
   static const String addToCart = 'addtocart';
@@ -35,7 +37,7 @@ class ApiProvider{
 
   // discount
   static const String getCouponDiscount = 'discount';
-  static const String applyCoupon = 'applydiscount?id=';
+  static const String applyCoupon = 'applydiscount';
   // https://serviceocitynewadmin.serviceocity.com/api/apply-discount?id=1
   static const String getTimeslots = 'gettimeslots';
 

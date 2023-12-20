@@ -126,7 +126,6 @@ class LoginPage extends GetView<LoginLogic> {
                     child: CountryListPick(
                       appBar: AppBar(
                         backgroundColor: Colors.white,
-                        centerTitle: true,
                         title: const Text('Choose you Country'),
                       ),
                       theme: CountryTheme(

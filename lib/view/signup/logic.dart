@@ -49,19 +49,10 @@ class SignupLogic extends GetxController {
           Toast.show(toastMessage: value.body['message'],isError: true),
           update()
         }
-      }else if(value.statusCode == 422){
-        Toast.show(toastMessage: value.body['message']?? "Try Again",isError: true),
-        update()
-      }else{
-        Toast.show(toastMessage: "Try Again",isError: true),
-        inProcess = false,
-        update()
       }
-    }).catchError((onError){
-      inProcess = false;
-      update();
-      print("onError:: $onError");
-      return onError;
+    }).whenComplete(() => {
+      inProcess = false,
+      update()
     });
   }
 

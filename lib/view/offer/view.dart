@@ -19,7 +19,6 @@ class OfferPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Offer"),
-        centerTitle: true,
       ),
       body: GetBuilder<OfferLogic>(
         assignId: true,
@@ -49,6 +48,7 @@ class OfferPage extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+
                             Flexible(
                               child: Row(
                                 children: [
@@ -120,17 +120,29 @@ class OfferPage extends StatelessWidget {
                                   border: Border.all(width: 0.5,color:  Colors.blue),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 2),
-                                child:
-
-                                logic.isApplyIndex == index ?
-                                    const CircularProgressIndicator() :
-                                const Text("Apply",
-                                  style: TextStyle(
-                                      color: Colors.blue
-                                  ),),
+                                  height: 40,
+                                  width: 65,
+                                child: logic.isApplyIndex == index ?
+                                const Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                        width: 12,
+                                        height: 12,
+                                        child: CircularProgressIndicator(strokeWidth: 1,)),
+                                  ],
+                                ) :
+                                Center(
+                                  child: const Text("Apply",
+                                    style: TextStyle(
+                                        color: Colors.blue
+                                    ),),
+                                )
                               ),
-                            )
+                            ),
+
                           ],
                         ),
                       );

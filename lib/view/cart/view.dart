@@ -24,16 +24,26 @@ List<BoxShadow>? boxShadow({ Color? color, double? blurRadius,Offset? offset }){
   ];
 }
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   const CartPage({super.key});
 
   @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    Get.find<CartLogic>().getCart(notify: false);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Get.find<CartLogic>().getCart();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Cart"),
-        centerTitle: true,
       ),
       bottomNavigationBar: Container(
         height: 60,
@@ -115,7 +125,7 @@ class CartPage extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
 
-                                    SizedBox(height: 10,),
+                                    const SizedBox(height: 10,),
 
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,7 +136,7 @@ class CartPage extends StatelessWidget {
                                             Text((logic.cartModels[index].name??"").toCapitalizeFirstLetter(),
                                               style: const TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 22
+                                                  fontSize: 20
                                               ),),
                                             Row(
                                               children: [
@@ -191,7 +201,7 @@ class CartPage extends StatelessWidget {
                                             height: 40,
                                             borderRadius: 10,
                                             onTap: (){
-                                              Get.toNamed(rsCheckoutPage,arguments: { "cart" : logic.cartModels[index].toJson() });
+                                              Get.toNamed(rsCheckoutPage,arguments: { "index" : index });
                                             },
                                           ),
                                         )

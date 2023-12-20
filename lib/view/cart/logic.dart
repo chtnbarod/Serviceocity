@@ -10,39 +10,27 @@ class CartLogic extends GetxController implements GetxService{
   final ApiClient apiClient;
   CartLogic({required this.apiClient});
 
-  Future<void> addToCart({ int? serviceId, int? quantity = 1 }) async{
-    await apiClient.postAPI(ApiProvider.addToCart, {
-      'product_id' : serviceId,
-      'quantity' : quantity
-    }).then((value) => {
-      print("DDDDDDDDDDDDD ${value.statusCode}"),
-      if(value.statusCode == 200){
-        Toast.show(toastMessage: "Added in cart")
-      }else{
-        Toast.show(toastMessage: value.body['error']??"internal server error")
-      },
-    }).catchError((onError){
-      return onError;
-    });
+  @override
+  void onInit() {
+    super.onInit();
+    getCart();
   }
-
-  //
 
   List<CartModel> cartModels = [];
   bool cartInProgress = false;
-  getCart() async{
+  getCart({ bool notify = true }) async{
+    if(cartInProgress) return;
     cartModels.clear();
     cartInProgress = true;
-    update();
+    if(notify){
+      update();
+    }
     await apiClient.getAPI(ApiProvider.viewCart).then((value) => {
-      print("valuevalue ${value.body}"),
       if(value.statusCode == 200){
         value.body.forEach((v) {
           cartModels.add(CartModel.fromJson(v));
         }),
       }
-    }).catchError((onError){
-      return onError;
     }).whenComplete(() => {
       cartInProgress = false,
       update(),
@@ -56,6 +44,8 @@ class CartLogic extends GetxController implements GetxService{
     await apiClient.postAPI("${ApiProvider.deleteCart}/${cartModels[index].cartId}", {}).then((value) => {
       if(value.statusCode == 200){
         if(cartModels.length == 1){
+          cartModels.clear(),
+          update(),
           Get.back()
         }else{
           cartModels.removeAt(index),
@@ -65,10 +55,25 @@ class CartLogic extends GetxController implements GetxService{
     }).whenComplete(() => deletingIndex = null);
   }
 
+  bool isValidOrder(double total){
+    if(cartModels.isEmpty || (double.tryParse(cartModels[0].minCharges.toString())??0) > total){
+      Toast.show(toastMessage: "Order Must be greater then ${cartModels[0].minCharges??100}");
+      return false;
+    }
+    return true;
+  }
+
+  List<CartModel> getCheckoutModel({ int? index }){
+    if(index != null) {
+     return  [ cartModels[index] ];
+    }
+    return cartModels;
+  }
+
   //
 
   int? increaseIndex;
-  cartIncrease({ String? serviceId, int quantity = 1 ,int? index  }) async{
+ Future<void> cartIncrease({ String? serviceId, int quantity = 1 ,int? index  }) async{
     if(increaseIndex != null) return;
     increaseIndex = index;
     update();
@@ -77,12 +82,9 @@ class CartLogic extends GetxController implements GetxService{
       "quantity" : quantity,
     }).then((value) => {
       if(value.statusCode == 200){
-        Toast.show(toastMessage: "Successfully Quantity Updated"),
         if(index != null){
           cartModels[index].quantity = "${value.body['quantity']}",
         }
-      }else{
-        Toast.show(toastMessage: value.body['error'] ?? "Try Again",isError: true)
       }
     }).whenComplete(() => {
       increaseIndex = null,
@@ -91,7 +93,7 @@ class CartLogic extends GetxController implements GetxService{
   }
 
   int? decreaseIndex;
-  cartDecrease({ String? serviceId, int quantity = 1 ,int? index  }) async{
+  Future<void>  cartDecrease({ String? serviceId, int quantity = 1 ,int? index  }) async{
     if(decreaseIndex != null) return;
     decreaseIndex = index;
     update();
@@ -100,7 +102,6 @@ class CartLogic extends GetxController implements GetxService{
       "quantityminus" : quantity,
     }).then((value) => {
       if(value.statusCode == 200){
-        Toast.show(toastMessage: value.body['message']??"Successfully Quantity Updated"),
         if(index != null){
           if(value.body['quantity'] == null){
             cartModels.removeAt(index)
@@ -108,13 +109,32 @@ class CartLogic extends GetxController implements GetxService{
             cartModels[index].quantity = ("${value.body['quantity']}"),
           },
         }
-      }else{
-        Toast.show(toastMessage: value.body['error'] ?? "Try Again",isError: true)
       }
     }).whenComplete(() => {
       decreaseIndex = null,
       update(),
     });
+  }
+
+
+ Future<Response> updateCart({ required bool isIncrease,String? serviceId, int quantity = 1   }) async{
+    dynamic body = {};
+
+    if(isIncrease){
+      body =  {
+        "id" : serviceId,
+        "quantity" : quantity,
+      };
+    }else{
+      body =  {
+        "id" : serviceId,
+        "quantityminus" : quantity,
+      };
+    }
+
+   Response response = await apiClient.putAPI(ApiProvider.updateCart,body);
+
+    return response;
   }
 
 }

@@ -16,7 +16,6 @@ class AddressPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your Address"),
-        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),

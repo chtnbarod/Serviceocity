@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:serviceocity/theme/app_colors.dart';
 import 'package:serviceocity/utils/toast.dart';
+import 'package:serviceocity/widget/not_found.dart';
 
 import '../../widget/bottom_sheet.dart';
 import '../../widget/custom_button.dart';
@@ -17,7 +18,6 @@ class TimeSlotsPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("Pick TimeSlots"),
-        centerTitle: true,
       ),
       body: GetBuilder<TimeSlotsLogic>(
         assignId: true,
@@ -47,7 +47,7 @@ class TimeSlotsPage extends StatelessWidget {
                                   topRight: Radius.circular(20),
                                 )
                             ),
-                            padding: EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(20),
                             child: SelectAddressPage(
                               callback: (dynamic json){
                                 logic.setAddress(json: json);
@@ -70,7 +70,10 @@ class TimeSlotsPage extends StatelessWidget {
                             child: Row(
                               children: [
 
-                                Icon((logic.address?.type??"").toUpperCase() == "HOME" ? Icons.home : Icons.location_on, color: Colors.deepPurple,),
+                                Icon(
+                                  (logic.address?.type??"").toUpperCase() == "HOME" ? Icons.home :
+                                  Icons.location_on,
+                                  color: Colors.deepPurple,),
                                 const SizedBox(width: 20,),
                                 Flexible(
                                   child: Text(logic.address?.address1 ??  "Select Address",
@@ -210,6 +213,11 @@ class TimeSlotsPage extends StatelessWidget {
                       );
                     },),
                 ),
+
+                if(logic.slotNotFound)...[
+                  const SizedBox(height: 20,),
+                  const NotFound(isExpand: false,message: "Opp! time slot not available",iconData: Icons.access_alarm_outlined,)
+                ],
 
                 if(logic.list.isNotEmpty)...[
 

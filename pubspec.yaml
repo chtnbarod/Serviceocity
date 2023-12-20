@@ -47,6 +47,7 @@ dependencies:
   geocoding:
   google_places_flutter:
   dio:
+  pull_to_refresh:
   flutter_staggered_grid_view:
   carousel_slider:
   cached_network_image:

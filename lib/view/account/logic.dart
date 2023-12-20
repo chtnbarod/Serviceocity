@@ -80,9 +80,6 @@ class AccountLogic extends GetxController implements GetxService{
         Toast.show(toastMessage: value.body['message']),
         userModel = UserModel.fromJson(value.body['data']),
       },
-      if(value.statusCode == 422){
-        Toast.show(toastMessage: value.body['message']?? "Try Again",isError: true),
-      }
     }).whenComplete(() => {
       updating = false,
       update(),
@@ -128,12 +125,13 @@ class AccountLogic extends GetxController implements GetxService{
       if(value.statusCode == 200){
         Toast.show(toastMessage: value.body['message']),
         if(userModel!.myaddress == null){
-          userModel!.myaddress = [],
+          userModel!.myaddress = [ Myaddress.fromJson(value.body['data']) ],
+        }else{
+          userModel!.myaddress!.insert(0, Myaddress.fromJson(value.body['data'])),
         },
         if(makePrimary){
           userModel!.primaryAddress = PrimaryAddress.fromJson(value.body['data']),
         },
-        userModel!.myaddress!.add(Myaddress.fromJson(value.body['data'])),
       },
     }).whenComplete(() => {
       addingNow = false,
@@ -149,9 +147,7 @@ class AccountLogic extends GetxController implements GetxService{
         if(value.statusCode == 200){
           userModel = UserModel.fromJson(value.body['data']),
           Get.offAllNamed(rsBasePage),
-        }else{
-          Toast.show(toastMessage: "Try Again")
-        },
+        }
       });
     }catch (e){
       Toast.show(toastMessage: "Try Again");
@@ -165,7 +161,10 @@ class AccountLogic extends GetxController implements GetxService{
     await apiClient.sharedPreferences.setString(ApiProvider.preferencesToken,token);
     userModel = UserModel.fromJson(json);
     if(GetPlatform.isWeb){
-      Get.offAllNamed(rsCartPage);
+      Get.offAllNamed(rsService,arguments: {
+        'category_id' : 1,
+        'sub_category_id' : 1,
+      });
     }else{
       Get.offAllNamed(rsBasePage);
     }

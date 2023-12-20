@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:serviceocity/theme/app_colors.dart';
 import 'package:serviceocity/utils/date_converter.dart';
 import 'package:serviceocity/utils/price_converter.dart';
+import 'package:serviceocity/view/cart/logic.dart';
 import 'package:serviceocity/view/checkout/logic.dart';
 import 'package:serviceocity/view/offer/binding.dart';
 import 'package:serviceocity/view/offer/view.dart';
@@ -29,7 +30,7 @@ class CheckoutPage extends StatelessWidget {
 
           const Divider(),
 
-          GetBuilder<CheckoutLogic>(
+          GetBuilder<CartLogic>(
             assignId: true,
             builder: (logic) {
               return Padding(
@@ -38,18 +39,16 @@ class CheckoutPage extends StatelessWidget {
                 child: CustomButton(
                   height: 40,
                   text: "Proceed",
-                  onTap:  () {
-                    if(logic.isValidOrder()){
-                      Get.toNamed(rsTimeSlotsPage, arguments: {
-                        "category_id": logic.cartModel[0].categoryId
-                      });
+                  onTap: () {
+                    if (logic.isValidOrder(Get.find<CheckoutLogic>().checkoutData.total)) {
+                      Get.toNamed(rsTimeSlotsPage);
                     }
                   },
                 ),
               );
             },
           ),
-          
+
         ],
       ),
 
@@ -63,48 +62,64 @@ class CheckoutPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
-                  ListView.builder(
-                    itemCount: logic.cartModel.length,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context, index) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text("${logic.cartModel[index].name}"
-                              .toCapitalizeFirstLetter()),
+                  GetBuilder<CartLogic>(
+                    assignId: true,
+                    builder: (cart) {
+                      return ListView.builder(
+                        itemCount: logic.cartIndex != null ? 1 : cart.cartModels.length,
+                        shrinkWrap: true,
+                        padding: EdgeInsets.zero,
+                        itemBuilder: (context, index) {
+                          index = logic.cartIndex ?? index;
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  flex: 5,
+                                  child: Text("${cart.cartModels[index].name}"
+                                      .toCapitalizeFirstLetter()),
+                                ),
 
-                          SizedBox(
-                            width: 100,
-                            child: IncreaseDecreaseButtons(
-                              cartCount: int.tryParse(
-                                  logic.cartModel[index].quantity ?? "0"),
-                              // isIncrease: logic.increaseIndex == index,
-                              // isDecrease: logic.decreaseIndex == index,
-                              onIncrease: () {
-                                // logic.cartIncrease(serviceId: logic.cartModels[index].cartId.toString(),
-                                //     index: index,
-                                //     quantity: int.tryParse(logic.cartModels[index].quantity??"1")??1);
-                              },
-                              onDecrease: () {
-                                // logic.cartDecrease(serviceId: logic.cartModels[index].cartId.toString(),
-                                //     index: index,
-                                //     quantity: int.tryParse(logic.cartModels[index].quantity??"1")??1);
-                              },
+                                Expanded(
+                                  flex: 3,
+                                  child: IncreaseDecreaseButtons(
+                                    cartCount: int.tryParse(cart.cartModels[index].quantity ?? "0"),
+                                    isIncrease: cart.increaseIndex == index,
+                                    isDecrease: cart.decreaseIndex == index,
+                                    onIncrease: () {
+                                      cart.cartIncrease(serviceId: cart.cartModels[index].cartId.toString(),
+                                          index: logic.cartIndex ?? index,
+                                          quantity: int.tryParse(cart.cartModels[index].quantity??"1")??1).whenComplete(() => logic.getCheckoutData(notify: true,json: logic.json));
+                                    },
+                                    onDecrease: () {
+                                      cart.cartDecrease(serviceId: cart.cartModels[index].cartId.toString(),
+                                          index: logic.cartIndex ?? index,
+                                          quantity: int.tryParse(cart.cartModels[index].quantity??"1")??1).whenComplete(() => logic.getCheckoutData(notify: true,json: logic.json));
+                                    },
+                                  ),
+                                ),
+
+
+                                Expanded(
+                                  flex: 2,
+                                  child: Text(PriceConverter.salePrice2(
+                                      price: cart.cartModels[index].price,
+                                      salePrice: cart.cartModels[index].salePrice,
+                                    quantity: cart.cartModels[index].quantity,
+                                  ),
+                                  textAlign: TextAlign.end,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold
+                                  ),),
+                                ),
+                              ],
                             ),
-                          ),
-
-
-                          Text(PriceConverter.salePrice2(
-                              price: logic.cartModel[index].price,
-                              salePrice: logic.cartModel[index].salePrice
-                          ), style: const TextStyle(
-                              fontWeight: FontWeight.bold
-                          ),),
-                        ],
-                      );
-                    },),
+                          );
+                        },);
+                    },
+                  ),
 
                   const SizedBox(height: 40,),
 
@@ -141,9 +156,7 @@ class CheckoutPage extends StatelessWidget {
                         callback: (dynamic json) {
                           logic.applyCode(json);
                         },
-                      ), binding: OfferBinding(),
-                          arguments: { "category_id": logic.cartModel[0]
-                              .categoryId});
+                      ), binding: OfferBinding());
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(vertical: 10),

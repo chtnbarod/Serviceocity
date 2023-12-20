@@ -81,6 +81,8 @@ class ApiClient extends GetConnect implements GetxService{
       if (response.status.connectionError) {
         throw Exception(noInternetMessage);
       }
+    }else if(response.statusCode == 422){
+      Toast.show(toastMessage: response.body?['error']??response.body?['message']??"Opp! Internal Issue");
     }
     return response;
   }

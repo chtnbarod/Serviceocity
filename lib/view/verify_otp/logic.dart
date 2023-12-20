@@ -99,13 +99,9 @@ class VerifyOtpLogic extends GetxController implements GetxService{
       }else{
          Toast.show(toastMessage: "Try Again",isError: true)
       },
-    },onError: (e){
-      print("verifyOtp e $e");
-    }).catchError((onError){
-      inProcess = false;
-      update();
-      print("verifyOtp ee $onError");
-      Toast.show(toastMessage: "Try Again",isError: true);
+    }).whenComplete(() => {
+      inProcess = false,
+      update()
     });
 
   }
@@ -127,18 +123,9 @@ class VerifyOtpLogic extends GetxController implements GetxService{
           'phone' : phone,
         }),
       }
-      else if(value.statusCode == 422){
-          Toast.show(toastMessage: value.body['message'],isError: true),
-      }else{
-        Toast.show(toastMessage: "Try Again",isError: true),
-        inProcess = false,
-        update()
-      }
-    }).catchError((onError){
-      inProcess = false;
-      update();
-      print("onError:: $onError");
-      return onError;
+    }).whenComplete(() => {
+      inProcess = false,
+      update()
     });
   }
 

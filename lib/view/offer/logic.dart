@@ -3,6 +3,7 @@ import 'package:serviceocity/core/di/api_provider.dart';
 import 'package:serviceocity/model/DiscountModel.dart';
 import 'package:serviceocity/utils/price_converter.dart';
 import 'package:serviceocity/utils/toast.dart';
+import 'package:serviceocity/view/cart/logic.dart';
 import 'package:serviceocity/view/checkout/logic.dart';
 
 import '../../core/di/api_client.dart';
@@ -16,7 +17,7 @@ class OfferLogic extends GetxController {
 
   @override
   void onInit() {
-    categoryId = argumentData?['category_id'];
+    categoryId = Get.find<CartLogic>().cartModels.first.categoryId;
     super.onInit();
   }
 
@@ -74,7 +75,9 @@ class OfferLogic extends GetxController {
       //
     }
 
-   Response response = await apiClient.postAPI("${ApiProvider.applyCoupon}${discounts[index].id}",{});
+   Response response = await apiClient.postAPI(ApiProvider.applyCoupon,{
+     'coupon_id' : discounts[index].id
+   });
 
     isApplyIndex = null;
     update();

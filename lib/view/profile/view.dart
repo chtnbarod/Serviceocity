@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_remix/flutter_remix.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:serviceocity/core/di/api_provider.dart';
 import 'package:serviceocity/core/routes.dart';
 import 'package:serviceocity/utils/assets.dart';
 import 'package:serviceocity/utils/date_converter.dart';
+import 'package:serviceocity/utils/toast.dart';
 import 'package:serviceocity/view/account/logic.dart';
 import 'package:serviceocity/view/profile/menu_item.dart';
 import 'package:serviceocity/widget/common_image.dart';
 
-import 'logic.dart';
-
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
+
+  static const platform = MethodChannel('samples.flutter.dev/battery');
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +83,20 @@ class ProfilePage extends StatelessWidget {
               margin: const EdgeInsets.symmetric(vertical: 10),
             ),
 
-            const MenuItem(
+            MenuItem(
               title: "Help Center",
               icon: Icons.chat_bubble,
               isLast: true,
+              onClick: () async{
+
+                final List<Object?> result = await platform.invokeMethod('callSabPaisaSdk',["sabpaisa","lastname","flutter@gmail.com","9423231232","350"]);
+
+                String txnStatus = result[0].toString();
+                String txnId = result[1].toString();
+
+                Toast.show(toastMessage: txnStatus,title: txnId);
+
+              },
             ),
 
             Container(
@@ -92,9 +104,12 @@ class ProfilePage extends StatelessWidget {
               color: Colors.black12,
               margin: const EdgeInsets.symmetric(vertical: 10),
             ),
-            const MenuItem(
+            MenuItem(
               title: "My Booking",
               icon: Icons.receipt,
+              onClick: (){
+                Get.toNamed(rsBookingPage);
+              },
             ),
             MenuItem(
               title: "Manage Address",

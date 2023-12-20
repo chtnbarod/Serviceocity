@@ -1,3 +1,5 @@
+import 'ServiceDetailsModel.dart';
+
 /// id : 1
 /// name : "admin"
 /// image : ["uploads/images/17011002520WhatsApp_Image_2023-11-27_at_12.32.30_PM-removebg-preview.png"]
@@ -66,6 +68,7 @@ class ServiceModel {
     subcategoryId = json['subcategory_id'];
     subchildcategoryId = json['subchildcategory_id'];
     metakeywords = json['metakeywords'];
+    cart = json['cart'] != null ? Cart.fromJson(json['cart']) : null;
     metadescription = json['metadescription'];
     showvideo = json['showvideo'];
     createdAt = json['created_at'];
@@ -94,12 +97,13 @@ class ServiceModel {
   String? categoryId;
   String? subcategoryId;
   String? subchildcategoryId;
-  dynamic metakeywords;
-  dynamic metadescription;
+  String? metakeywords;
+  String? metadescription;
   String? showvideo;
   String? createdAt;
   String? updatedAt;
-  dynamic deletedAt;
+  String? deletedAt;
+  Cart? cart;
   List<Addons>? addons;
 
   Map<String, dynamic> toJson() {
@@ -187,6 +191,7 @@ class Addons {
       showvideo = json['showvideo'];
       serviceId = json['service_id'];
       addonId = json['addon_id'];
+      cart = json['cart'] != null ? Cart.fromJson(json['cart']) : null;
       image = json['image'] != null ? json['image'].cast<String>() : [];
       createdAt = json['created_at'];
       updatedAt = json['updated_at'];
@@ -209,9 +214,10 @@ class Addons {
   String? showvideo;
   String? serviceId;
   String? addonId;
+  Cart? cart;
   String? createdAt;
   String? updatedAt;
-  dynamic deletedAt;
+  String? deletedAt;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

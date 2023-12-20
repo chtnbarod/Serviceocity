@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:serviceocity/core/di/api_provider.dart';
 import 'package:serviceocity/model/BannerModel.dart';
-import 'package:serviceocity/model/CategoryModel.dart';
 import 'package:serviceocity/model/FeatureModel.dart';
 import 'package:serviceocity/view/account/logic.dart';
+import 'package:serviceocity/view/category/logic.dart';
 import 'package:serviceocity/view/map/AddressListModel.dart';
 import '../../core/di/api_client.dart';
-import '../../model/SubCategoryModel.dart';
 
 class HomeLogic extends GetxController implements GetxService{
   final ApiClient apiClient;
@@ -16,11 +15,15 @@ class HomeLogic extends GetxController implements GetxService{
 
 
   List<FeatureModel> featureList = [];
-  List<CategoryModel> categories = [];
+
   List<BannerModel> bannerList = [];
   String? topImage;
   String? middleImage;
   String? bottomImage;
+  bool isEmptyCategory = false;
+  setEmptyCategory(bool isEmpty){
+    isEmptyCategory = isEmpty;
+  }
 
   bool isPullProcess = false;
   pullRefresh({bool notify = false }) async{
@@ -30,7 +33,7 @@ class HomeLogic extends GetxController implements GetxService{
     if(notify){
       update();
     }
-    await getCategory();
+    await Get.find<CategoryLogic>().getCategory(notify: false);
     await getFeature();
     await getBanner();
     isPullProcess = false;
@@ -44,23 +47,6 @@ class HomeLogic extends GetxController implements GetxService{
         value.body['data'].forEach((v) {
           featureList.add(FeatureModel.fromJson(v));
         }),
-      }
-    });
-  }
-  
-
-  bool isEmpty = false;
-  getCategory() async{
-    categories.clear();
-    isEmpty = false;
-   await apiClient.getAPI(ApiProvider.getCategories).then((value) => {
-      if(value.statusCode == 200){
-        value.body['data'].forEach((v) {
-          categories.add(CategoryModel.fromJson(v));
-        }),
-      },
-      if(value.statusCode == 404){
-        isEmpty = true,
       }
     });
   }
@@ -86,29 +72,6 @@ class HomeLogic extends GetxController implements GetxService{
       }
     });
   }
-
-  List<SubCategoryModel> subCategories = [];
-  int? forFubCategories;
-  bool isGetFubCategories = false;
-  getSubCategory(int? id){
-    subCategories.clear();
-    isGetFubCategories = true;
-    update();
-    apiClient.getAPI("${ApiProvider.getSubCategories}?category_id=$id",).then((value) => {
-      if(value.statusCode == 200){
-        value.body['data'].forEach((v) {
-          subCategories.add(SubCategoryModel.fromJson(v));
-        }),
-      }
-    }).whenComplete(() => {
-      isGetFubCategories = false,
-      if(subCategories.isEmpty){
-        Get.back()
-      },
-      update(),
-    });
-  }
-
 
   emptyAddress(){
     return Get.find<AccountLogic>().userModel?.myaddress?.isEmpty??true;

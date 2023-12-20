@@ -12,6 +12,7 @@ class MyMapLogic extends GetxController{
 
 
   GoogleMapController? _controller;
+  GoogleMapController? get getController => _controller;
 
   void onMapCreated(GoogleMapController controller) {
     _controller = controller;
@@ -34,7 +35,9 @@ class MyMapLogic extends GetxController{
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),),);
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        getAddressLocation();
+        if(!kDebugMode){
+          getAddressLocation();
+        }
       });
   }
 
@@ -127,5 +130,11 @@ class MyMapLogic extends GetxController{
       "latitude" : latLng.latitude,
       "longitude" : latLng.longitude
     });
+  }
+
+  @override
+  void onClose() {
+    _controller?.dispose();
+    super.onClose();
   }
 }

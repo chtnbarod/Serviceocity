@@ -1,12 +1,9 @@
-import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
 import 'package:google_places_flutter/model/prediction.dart';
-import 'package:serviceocity/view/account/logic.dart';
-import 'package:serviceocity/view/home/logic.dart';
 import 'package:serviceocity/view/map/logic.dart';
 import 'package:serviceocity/widget/custom_button.dart';
 
@@ -51,7 +48,6 @@ class _MyMapState extends State<MyMap> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("Choose Location"),
-          centerTitle: true,
         ),
         body: Container(
           height: Get.height,
@@ -69,15 +65,20 @@ class _MyMapState extends State<MyMap> {
                     children: [
 
                       Flexible(
-                        child: GoogleMap(
-                          myLocationEnabled: false,
-                          initialCameraPosition: CameraPosition(target: logic.latLng, zoom: 10),
-                          mapType: MapType.normal,
-                          onMapCreated: logic.onMapCreated,
-                          markers: logic.markers,
-                          onTap: (LatLng lat) {
-                            logic.onCameraMove(lat);
-                          },
+                        child: Builder(
+                          builder: (context) {
+                            return GoogleMap(
+                              zoomControlsEnabled: false,
+                              buildingsEnabled: false,
+                              initialCameraPosition: CameraPosition(target: logic.latLng, zoom: 10),
+                              mapType: MapType.normal,
+                              onMapCreated: logic.onMapCreated,
+                              markers: logic.markers,
+                              onTap: (LatLng lat) {
+                                logic.onCameraMove(lat);
+                              },
+                            );
+                          }
                         ),
                       ),
 
