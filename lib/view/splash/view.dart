@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:serviceocity/theme/app_colors.dart';
 import 'package:serviceocity/widget/common_image.dart';
 
 import '../../utils/assets.dart';
@@ -14,14 +15,31 @@ class SplashPage extends GetView<SplashLogic> {
     return Scaffold(
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
 
+
+            const SizedBox(height: 30,),
+
+
             CommonImage(
-              assetPlaceholder: "assets/images/spalsh.jpeg",
-              width: MediaQuery.of(context).size.width/2,
-            )
+              assetPlaceholder: "assets/images/spalsh.png",
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width * 0.8,
+            ),
+
+
+            const Padding(
+              padding: EdgeInsets.only(bottom: 70),
+              child: Text("Trusted by countless Homeowners",
+              style: TextStyle(
+                color: AppColors.primary,
+                fontSize: 15
+              ),),
+            ),
 
           ],
         ),

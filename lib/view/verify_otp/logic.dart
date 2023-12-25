@@ -44,7 +44,7 @@ class VerifyOtpLogic extends GetxController implements GetxService{
   var time = 0.obs;
 
  String getTime(){
-    return "${time.value}".toMinToHM();
+    return "${time.value}".toSecToMS();
   }
 
   Timer? _timer;

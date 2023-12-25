@@ -110,17 +110,22 @@ class LoginPage extends GetView<LoginLogic> {
             Container(
               decoration: BoxDecoration(
                   border: Border.all(color: AppColors.textColor(), width: 1),
-                  borderRadius: BorderRadius.circular(5)
+                  borderRadius: BorderRadius.circular(5),
               ),
               margin: const EdgeInsets.symmetric(horizontal: 20),
               padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
               child: Row(
                 children: [
+
                   Container(
                     height: 40,
+                    constraints: const BoxConstraints(
+                      minWidth: 90,
+                      maxWidth: 112
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     decoration: BoxDecoration(
-                      color: AppColors.whiteColor(),
+                      color: AppColors.appBackground,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: CountryListPick(
@@ -135,6 +140,21 @@ class LoginPage extends GetView<LoginLogic> {
                         isDownIcon: true,
                         showEnglishName: true,
                       ),
+                      pickerBuilder: (v,vv){
+                        return Container(
+                          color: AppColors.appBackground,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image.asset(vv?.flagUri ??"",package: 'country_list_pick',width: 20,),
+                              const SizedBox(width: 4,),
+                              Text(vv?.dialCode??""),
+                              const SizedBox(width: 3,),
+                              const Icon(Icons.keyboard_arrow_down)
+                            ],
+                          ),
+                        );
+                      },
                       initialSelection: '+91',
                       onChanged: (CountryCode? code) {
                         controller.countryCodeController.text = code?.dialCode??"+91";
@@ -145,23 +165,25 @@ class LoginPage extends GetView<LoginLogic> {
                   Container(
                     width: 1,
                     height: 40,
-                    margin: const EdgeInsets.symmetric(horizontal: 10),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 5, vertical: 2),
                     decoration: const BoxDecoration(
                         border: Border(right: BorderSide(width: 1))
                     ),
                   ),
 
+                  SizedBox(width: 15,),
+
                   Flexible(
                     child: TextField(
                       controller: controller.numberController,
                       keyboardType: TextInputType.phone,
+                      maxLength: 10,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
+                        counterText: ""
                       ),
                     ),
-                  )
+                  ),
+
                 ],
               ),
             ),

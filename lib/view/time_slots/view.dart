@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:serviceocity/theme/app_colors.dart';
+import 'package:serviceocity/utils/date_converter.dart';
 import 'package:serviceocity/utils/toast.dart';
+import 'package:serviceocity/view/time_slots/payment_mode.dart';
 import 'package:serviceocity/widget/not_found.dart';
 
 import '../../widget/bottom_sheet.dart';
@@ -175,13 +177,13 @@ class TimeSlotsPage extends StatelessWidget {
                     shrinkWrap: true,
                     scrollDirection: Axis.horizontal,
                     itemBuilder: (context, index) {
-                      List<String> parts = (logic.list[0].days?[index]??"").split(' ');
-                      bool isSelected = logic.selectedDate == (logic.list[0].days?[index]??"");
+                      DateTime? dateTime = (logic.list[0].days?[index].date??"").toDateTime();
+                      bool isSelected = logic.selectedDate == (logic.list[0].days?[index].date??"");
                       return Padding(
                         padding: const EdgeInsets.only(right: 10),
                         child: InkWell(
                           onTap: (){
-                            logic.selectedDate = logic.list[0].days?[index];
+                            logic.selectedDate = logic.list[0].days?[index].date;
                             logic.getTimeSlot();
                           },
                           child: Container(
@@ -196,13 +198,11 @@ class TimeSlotsPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
 
-
-                               if(parts.isNotEmpty)
-                                Text(parts[0]??''),
+                                Text("${logic.list[0].days?[index].dayName}"),
 
                                 const SizedBox(height: 5,),
-                               if(parts.length > 1)
-                                Text(parts[1]??'',
+                               if(dateTime != null)
+                                Text("${dateTime.day??''}",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold
                                 ),),
@@ -278,7 +278,38 @@ class TimeSlotsPage extends StatelessWidget {
                   CustomButton(
                     text: "Proceed",
                     onTap: () {
-                      logic.orderNow();
+                      if(!logic.validate()) return;
+                      Get.bottomSheet(
+                        buildBottomSheet(
+                            child: Container(
+                              constraints: BoxConstraints(
+                                  minWidth: Get.width,
+                                  maxHeight: Get.height*0.4,
+                                  minHeight: 0
+                              ),
+                              decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                  )
+                              ),
+                              padding: const EdgeInsets.all(20),
+                              child: PaymentMode(
+                                onPaymentTab: (PaymentMethod? mode){
+                                  Get.back();
+                                  if(mode != null){
+                                    logic.orderNow(mode: mode);
+                                  }
+                                },
+                              ),
+                            )
+                        ),
+                        enableDrag: true,
+                        isScrollControlled: true,
+                        barrierColor: Colors.black38,
+                        isDismissible: false,
+                      );
                     },
                     isLoading: logic.orderInProcess,
                   ),

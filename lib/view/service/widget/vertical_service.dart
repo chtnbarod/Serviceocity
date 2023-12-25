@@ -135,61 +135,73 @@ class VerticalService extends StatelessWidget {
                   ),
                 ),
 
-               if(serviceModel?.addons?.isNotEmpty??false)
-                InkWell(
-                  onTap: () {
-                    Get.bottomSheet(
-                      buildBottomSheet(child: AddonsService(list: serviceModel?.addons,
-                        onAddToCart: onAddToCart2,
-                        onUpdate: onUpdate2,
-                      )),
-                      enableDrag: true,
-                      isScrollControlled: true,
-                      barrierColor: Colors.black38,
-                      isDismissible: false,
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(5),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Color(0xffDDDDDD),
-                          blurRadius: 6.0,
-                          spreadRadius: 2.0,
-                          offset: Offset(0.0, 0.0),
-                        )
-                      ],
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 3),
-                    margin: const EdgeInsets.only(right: 10),
-                    child: const Text("Select",
-                    style: TextStyle(
-                      color: AppColors.primary
-                    ),),
-                  ),
-                ),
-
+               if(serviceModel?.addons?.isNotEmpty??false)...[
+                 InkWell(
+                   onTap: () {
+                     Get.bottomSheet(
+                       buildBottomSheet(child: AddonsService(list: serviceModel?.addons,
+                         onAddToCart: onAddToCart2,
+                         onUpdate: onUpdate2,
+                       )),
+                       enableDrag: true,
+                       isScrollControlled: true,
+                       barrierColor: Colors.black38,
+                       isDismissible: false,
+                     );
+                   },
+                   child: Container(
+                     decoration: BoxDecoration(
+                       color: Colors.white,
+                       borderRadius: BorderRadius.circular(5),
+                       boxShadow: const [
+                         BoxShadow(
+                           color: Color(0xffDDDDDD),
+                           blurRadius: 6.0,
+                           spreadRadius: 2.0,
+                           offset: Offset(0.0, 0.0),
+                         )
+                       ],
+                     ),
+                     padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 3),
+                     margin: const EdgeInsets.only(right: 10),
+                     child: const Text("Select",
+                       style: TextStyle(
+                           color: AppColors.primary
+                       ),),
+                   ),
+                 ),
+               ]else...[
+                 Container(
+                   color: Colors.white,
+                   child: AddToCartButton(
+                     quantity: int.tryParse((serviceModel?.cart?.quantity??"").toString())??0,
+                     cartId: serviceModel?.cart?.id,
+                     serviceId: serviceModel?.id,
+                     onUpdate: onUpdate,
+                     onAddToCart: onAddToCart,
+                   ),
+                 )
+               ],
               ],
             ),
           ),
         ),
 
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Container(
-            color: Colors.white,
-            child: AddToCartButton(
-              quantity: int.tryParse((serviceModel?.cart?.quantity??"").toString())??0,
-              cartId: serviceModel?.cart?.id,
-              serviceId: serviceModel?.id,
-              onUpdate: onUpdate,
-              onAddToCart: onAddToCart,
-            ),
-          ),
-        ),
+       // if(serviceModel?.cart != null)
+       //  Positioned(
+       //    right: 0,
+       //    bottom: 0,
+       //    child: Container(
+       //      color: Colors.white,
+       //      child: AddToCartButton(
+       //        quantity: int.tryParse((serviceModel?.cart?.quantity??"").toString())??0,
+       //        cartId: serviceModel?.cart?.id,
+       //        serviceId: serviceModel?.id,
+       //        onUpdate: onUpdate,
+       //        onAddToCart: onAddToCart,
+       //      ),
+       //    ),
+       //  ),
       ],
     );
   }

@@ -43,6 +43,32 @@ class OfferLogic extends GetxController {
     });
   }
 
+ dynamic json;
+ bool isSearch = false;
+ Future<void> applyCouponCode(String? text) async{
+   if(isSearch || (text?.length??0) < 3) return;
+    isSearch = true;
+    json = null;
+    update();
+    Response response = await apiClient.postAPI(ApiProvider.applyCoupon,{
+      'coupon_identifier' : text//"ZD8A7X"//text
+    });
+
+    if(response.statusCode == 200){
+      json = {
+        "id" : response.body?['discount']?['id'],
+        "amount" : response.body?['discount']?['amount'],
+        "percent" : response.body?['discount']?['percent'],
+        "type" : response.body?['discount']?['type'],
+        "code" : response.body?['discount']?['code']
+      };
+    }else if(response.statusCode == 422){
+      Toast.show(toastMessage: response.body?['message']?? response.body?['error']?? "Coupon can`t apply",isError: true);
+    }
+    isSearch = false;
+    update();
+  }
+
   int? isApplyIndex;
   Future<bool> applyCoupon(int index) async{
 
@@ -76,7 +102,7 @@ class OfferLogic extends GetxController {
     }
 
    Response response = await apiClient.postAPI(ApiProvider.applyCoupon,{
-     'coupon_id' : discounts[index].id
+     'coupon_identifier' : discounts[index].id
    });
 
     isApplyIndex = null;

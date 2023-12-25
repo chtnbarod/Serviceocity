@@ -5,6 +5,7 @@ import 'package:serviceocity/utils/date_converter.dart';
 import 'package:serviceocity/utils/price_converter.dart';
 import 'package:serviceocity/view/cart/logic.dart';
 import 'package:serviceocity/view/checkout/logic.dart';
+import 'package:serviceocity/view/checkout/refund_policy.dart';
 import 'package:serviceocity/view/offer/binding.dart';
 import 'package:serviceocity/view/offer/view.dart';
 import 'package:serviceocity/widget/custom_button.dart';
@@ -12,6 +13,7 @@ import 'package:serviceocity/widget/custom_button.dart';
 import '../../core/routes.dart';
 import 'package:country_list_pick/country_list_pick.dart';
 
+import '../../widget/custom_input.dart';
 import '../cart/increase_decrease_buttons.dart';
 
 
@@ -66,7 +68,7 @@ class CheckoutPage extends StatelessWidget {
                     assignId: true,
                     builder: (cart) {
                       return ListView.builder(
-                        itemCount: logic.cartIndex != null ? 1 : cart.cartModels.length,
+                        itemCount: (logic.cartIndex != null && cart.cartModels.isNotEmpty) ? 1 : cart.cartModels.length,
                         shrinkWrap: true,
                         padding: EdgeInsets.zero,
                         itemBuilder: (context, index) {
@@ -96,7 +98,7 @@ class CheckoutPage extends StatelessWidget {
                                     onDecrease: () {
                                       cart.cartDecrease(serviceId: cart.cartModels[index].cartId.toString(),
                                           index: logic.cartIndex ?? index,
-                                          quantity: int.tryParse(cart.cartModels[index].quantity??"1")??1).whenComplete(() => logic.getCheckoutData(notify: true,json: logic.json));
+                                          quantity: int.tryParse(cart.cartModels[index].quantity??"1")??1,useBack: true).whenComplete(() => logic.getCheckoutData(notify: true,json: logic.json));
                                     },
                                   ),
                                 ),
@@ -191,6 +193,29 @@ class CheckoutPage extends StatelessWidget {
                     ),
                   ),
 
+                  // Padding(
+                  //   padding: const EdgeInsets.all(20),
+                  //   child: Column(
+                  //     children: [
+                  //       CustomInput(
+                  //         hintText: "Enter Coupon code",
+                  //         onTextChanged: (String? text){
+                  //           logic.applyCouponCode(text);
+                  //         },
+                  //         suffixIcon: TextButton(onPressed: logic.json == null ? null : (){
+                  //           logic.applyCode(logic.json);
+                  //         }, child: const Text("Apply")),
+                  //       ),
+                  //       if(logic.isSearch)...[
+                  //         const Padding(
+                  //           padding: EdgeInsets.symmetric(horizontal: 10),
+                  //           child: LinearProgressIndicator(minHeight: 1),
+                  //         ),
+                  //       ],
+                  //     ],
+                  //   ),
+                  // ),
+
                   Container(
                     height: 5,
                     color: Colors.grey.withOpacity(0.1),
@@ -238,7 +263,7 @@ class CheckoutPage extends StatelessWidget {
                                 style: TextStyle(
                                     fontWeight: FontWeight.w500
                                 ),),
-                              Text("${logic.json['code']}",
+                              Text("${logic.json?['code']}",
                                 style: const TextStyle(
                                     fontSize: 12
                                 ),),
@@ -333,31 +358,32 @@ class CheckoutPage extends StatelessWidget {
                     margin: const EdgeInsets.symmetric(vertical: 10),
                   ),
 
-                  const SizedBox(height: 10,),
-
-                  const Text("Cancellation policy",
-                    style: TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold
-                    ),),
-
-                  const SizedBox(height: 5,),
-
-                  const Text(
-                    "Free cancellation if done more than 3 hrs before the service or if professional isn`t not assigned. A fee will be changed otherwise",
-                    style: TextStyle(
-                        fontWeight: FontWeight.w300,
-                        fontSize: 13,
-                        color: Colors.black54
-                    ),),
-
-                  const SizedBox(height: 10,),
-
-                  const Text("Learn more",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        decoration: TextDecoration.underline
-                    ),),
+                  const RefundPolicy(),
+                  // const SizedBox(height: 10,),
+                  //
+                  // const Text("Cancellation policy",
+                  //   style: TextStyle(
+                  //       fontSize: 17,
+                  //       fontWeight: FontWeight.bold
+                  //   ),),
+                  //
+                  // const SizedBox(height: 5,),
+                  //
+                  // const Text(
+                  //   "Free cancellation if done more than 3 hrs before the service or if professional isn`t not assigned. A fee will be changed otherwise",
+                  //   style: TextStyle(
+                  //       fontWeight: FontWeight.w300,
+                  //       fontSize: 13,
+                  //       color: Colors.black54
+                  //   ),),
+                  //
+                  // const SizedBox(height: 10,),
+                  //
+                  // const Text("Learn more",
+                  //   style: TextStyle(
+                  //       fontWeight: FontWeight.bold,
+                  //       decoration: TextDecoration.underline
+                  //   ),),
 
 
                   const SizedBox(height: 25,),

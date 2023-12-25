@@ -37,27 +37,33 @@ class UserModel {
       this.updatedAt, 
       this.deletedAt, 
       this.myReferCode, 
-      this.primaryAddress, 
+      this.playerId,
+      this.primaryAddress,
       this.myaddress,});
 
   UserModel.fromJson(dynamic json) {
-    id = json['id'];
-    name = json['name'];
-    mobile = json['mobile'];
-    email = json['email'];
-    emailVerifiedAt = json['email_verified_at'];
-    image = json['image'];
-    countryCode = json['country_code'];
-    address = json['address'] != null ? Address.fromJson(json['address']) : null;
-    city = json['city'];
-    referCode = json['refer_code'];
-    otp = json['otp'];
-    status = json['status'];
-    roleId = json['role_id'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
-    myReferCode = json['my_refer_code'];
+    try{
+      id = json['id'];
+      name = json['name'];
+      mobile = json['mobile'];
+      email = json['email'];
+      emailVerifiedAt = json['email_verified_at'];
+      image = json['image'];
+      countryCode = json['country_code'];
+      address = json['address'] != null ? Address.fromJson(json['address']) : null;
+      city = json['city'];
+      referCode = json['refer_code'];
+      playerId = json['player_id'];
+      otp = json['otp'];
+      status = json['status'];
+      roleId = json['role_id'];
+      createdAt = json['created_at'];
+      updatedAt = json['updated_at'];
+      deletedAt = json['deleted_at'];
+      myReferCode = json['my_refer_code'];
+    }catch(e){
+      print("ABCDEF $e");
+    }
     primaryAddress = json['primary_address'] != null ? PrimaryAddress.fromJson(json['primary_address']) : null;
     if (json['myaddress'] != null) {
       myaddress = [];
@@ -75,7 +81,7 @@ class UserModel {
   dynamic countryCode;
   Address? address;
   dynamic city;
-  dynamic referCode;
+  String? referCode;
   dynamic otp;
   String? status;
   String? roleId;
@@ -83,6 +89,7 @@ class UserModel {
   String? updatedAt;
   dynamic deletedAt;
   String? myReferCode;
+  String? playerId;
   PrimaryAddress? primaryAddress;
   List<Myaddress>? myaddress;
 
@@ -107,6 +114,7 @@ class UserModel {
     map['updated_at'] = updatedAt;
     map['deleted_at'] = deletedAt;
     map['my_refer_code'] = myReferCode;
+    map['player_id'] = playerId;
     if (primaryAddress != null) {
       map['primary_address'] = primaryAddress?.toJson();
     }

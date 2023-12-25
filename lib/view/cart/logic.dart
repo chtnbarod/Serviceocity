@@ -93,7 +93,7 @@ class CartLogic extends GetxController implements GetxService{
   }
 
   int? decreaseIndex;
-  Future<void>  cartDecrease({ String? serviceId, int quantity = 1 ,int? index  }) async{
+  Future<void>  cartDecrease({ String? serviceId, int quantity = 1 ,int? index , bool useBack = false }) async{
     if(decreaseIndex != null) return;
     decreaseIndex = index;
     update();
@@ -112,6 +112,9 @@ class CartLogic extends GetxController implements GetxService{
       }
     }).whenComplete(() => {
       decreaseIndex = null,
+      if(useBack && cartModels.isEmpty){
+        Get.back(),
+      },
       update(),
     });
   }

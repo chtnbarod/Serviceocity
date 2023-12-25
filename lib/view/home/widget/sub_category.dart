@@ -91,6 +91,7 @@ class SubCategory extends StatelessWidget {
                          return GridSubCategory(categoryModel: logic.subCategories[index],onTap: (){
                            Get.back();
                            Get.toNamed(rsService,arguments: {
+                             'toolbar_name' : logic.subCategories[index].name,
                              'category_id' : logic.subCategories[index].id,
                              'sub_category_id' : categoryId,
                            });

@@ -41,6 +41,12 @@ manage booking
 remove toast bar
 payment gateway
 
+// show total + and - wallet in wallet page
+// wallet payment api done need to app
+// show refer code and set amount
+// term an about in my profile
+
+
 
 
 

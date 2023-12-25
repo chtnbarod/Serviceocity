@@ -4,6 +4,8 @@ import 'package:serviceocity/core/di/api_provider.dart';
 import 'package:serviceocity/model/UserModel.dart';
 import 'package:serviceocity/utils/toast.dart';
 import 'package:serviceocity/view/checkout/logic.dart';
+import 'package:serviceocity/view/time_slots/pay_now.dart';
+import 'package:serviceocity/view/time_slots/payment_mode.dart';
 
 import '../../core/di/api_client.dart';
 import '../../model/TimeslotsModel.dart';
@@ -38,35 +40,33 @@ class TimeSlotsLogic extends GetxController {
 
 
   bool orderInProcess = false;
-  orderNow() async{
-
-    if(address == null){
-      Toast.show(toastMessage: "Please Select Address",isError: true);
-      return;
-    }
-
-    if(selectedDate == null){
-      Toast.show(toastMessage: "Please Select Date",isError: true);
-      return;
-    }
-
-    if(selectedTime == null){
-      Toast.show(toastMessage: "Please Select Time",isError: true);
-      return;
-    }
-
-    // ThankYou
+  orderNow({ required PaymentMethod mode }) async{
 
     orderInProcess = true;
     update();
 
     dynamic body = Get.find<CheckoutLogic>().getOrderBody(
-      addressId: "${address?.id}",
-      date: selectedDate!,
-      time: selectedTime!
+        addressId: "${address?.id}",
+        date: selectedDate!,
+        time: selectedTime!,
+        mode: mode.name
     );
+    PayNow? payNow;
+    if(mode == PaymentMethod.ONLINE){
+      payNow = PayNow(amount: Get.find<CheckoutLogic>().checkoutData.total);
+      payNow.init();
+      payNow.generateChecksum();
 
-    await apiClient.postAPI(ApiProvider.orderPlace, {"orders" : body}).then((value) => {
+      bool isDone = await payNow.pay();
+     if(!isDone){
+       Toast.show(toastMessage: "Payment Failed",isError: true);
+       orderInProcess = false;
+       update();
+       return;
+     }
+    }
+
+    await apiClient.postAPI(ApiProvider.orderPlace, {"orders" : body,"txt_id": payNow?.txtId}).then((value) => {
       if(value.statusCode == 200){
 
         Get.to(() => const OrderDetailPage(fromOrder: true,),binding: OrderDetailBinding(),arguments: { "order_id" : value.body['order_ids']  }),
@@ -81,6 +81,23 @@ class TimeSlotsLogic extends GetxController {
   }
 
 
+  bool validate(){
+    if(address == null){
+      Toast.show(toastMessage: "Please Select Address",isError: true);
+      return false;
+    }
+
+    if(selectedDate == null){
+      Toast.show(toastMessage: "Please Select Date",isError: true);
+      return false;
+    }
+
+    if(selectedTime == null){
+      Toast.show(toastMessage: "Please Select Time",isError: true);
+      return false;
+    }
+    return true;
+  }
 
   List<TimeslotsModel> list = [];
   bool inProcess = false;
@@ -92,10 +109,10 @@ class TimeSlotsLogic extends GetxController {
     slotNotFound = false;
     update();
 
-    await apiClient.getAPI("${ApiProvider.getTimeslots}?category_id=$categoryId&selected_date=${getDate(day: selectedDate)}").then((value) => {
+    await apiClient.getAPI("${ApiProvider.getTimeslots}?category_id=$categoryId&selected_date=${getDate(selectedDate: selectedDate)}").then((value) => {
       if(value.statusCode == 200){
         value.body.forEach((v) {
-          selectedDate ??= v['days'][0];
+          selectedDate ??= v['days'][0]['date'];
           list.add(TimeslotsModel.fromJson(v));
         }),
       }else if(value.statusCode == 404){
@@ -107,15 +124,15 @@ class TimeSlotsLogic extends GetxController {
     });
     
   }
+
 }
-String getDate({ String? day }) {
+
+String getDate({ String? selectedDate }) {
+  if(selectedDate != null) return selectedDate;
   DateTime dateTime = DateTime.now();
   String y = dateTime.year.toString();
   String m = dateTime.month.toString().padLeft(2, '0');
   String d = dateTime.day.toString().padLeft(2, '0');
-  if(day != null){
-     d = day.split(' ')[1];
-  }
   return "$y-$m-$d";
 }
 

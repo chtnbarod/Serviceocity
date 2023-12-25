@@ -47,6 +47,10 @@ class PriceConverter {
     return (value??0.0).toStringAsFixed(0);
   }
 
+  static int getSingleDigit2(double? value) {
+    return int.parse((value??0.0).toStringAsFixed(0));
+  }
+
 
   static String removeDecimalZeroFormatWithFlag(double value , { int asFixed = 2 }) {
     return "${getFlag()}${value.toStringAsFixed(asFixed)}";

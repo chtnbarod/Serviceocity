@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:serviceocity/view/booking/view.dart';
+import 'package:serviceocity/view/cart/view.dart';
 import 'package:serviceocity/view/home/view.dart';
+import 'package:serviceocity/view/profile/view.dart';
+import 'package:serviceocity/view/wallet/view.dart';
 
 import '../../theme/app_colors.dart';
+import 'coming_soon.dart';
 
 class BasePage extends StatefulWidget {
   const BasePage({super.key});
@@ -14,10 +19,9 @@ class _BasePageState extends State<BasePage> {
 
   static const List<Widget> _options = <Widget>[
     HomePage(),
-    HomePage(),
-    HomePage(),
-    HomePage(),
-    HomePage(),
+    ComingSoon(title: "Reword"),
+    ComingSoon(title: "SC Royal"),
+    ComingSoon(title: "Offer"),
   ];
 
   int selectedIndex = 0;
@@ -40,22 +44,31 @@ class _BasePageState extends State<BasePage> {
         type: BottomNavigationBarType.fixed,
         currentIndex: selectedIndex,
         onTap: onItemTapped,
-        items:  const [
+        items:  [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Image.asset("assets/menu/home.png",
+                height: 24,
+                width: 24,
+                color: selectedIndex == 0 ? AppColors.primary : Colors.black54,),
               label: "Home"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.campaign),
-              label: "Rewards"),
+              icon: Image.asset("assets/menu/reward.png",
+                height: 24,
+                width: 24,
+                color: selectedIndex == 1 ? AppColors.primary : Colors.black54,),
+              label: "Reword"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.crop),
+              icon: Image.asset("assets/menu/royal.png",
+                height: 24,
+                width: 24,
+                color: selectedIndex == 2 ? AppColors.primary : Colors.black54,),
               label: "SC Royal"),
           BottomNavigationBarItem(
-              icon: Icon(Icons.local_offer),
+              icon: Image.asset("assets/menu/offer.png",
+              height: 24,
+              width: 24,
+              color: selectedIndex == 3 ? AppColors.primary : Colors.black54,),
               label: "Offer"),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.calendar_month),
-              label: "Booking"),
         ],
       ),
       body: _options[selectedIndex] ,

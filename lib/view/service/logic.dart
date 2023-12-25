@@ -14,9 +14,11 @@ class ServiceLogic extends GetxController {
 
   int? categoryId;
   int? subCategoryId;
+  String? toolbarName;
   @override
   void onInit() {
     if(GetPlatform.isAndroid){
+      toolbarName = argumentData?['toolbar_name'];
       categoryId = argumentData?['category_id'];
       subCategoryId = argumentData?['sub_category_id'];
     }else{

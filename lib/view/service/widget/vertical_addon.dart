@@ -120,6 +120,17 @@ class VerticalAddon extends StatelessWidget {
                   ),
                 ),
 
+                Container(
+                  color: Colors.white,
+                  child: AddToCartButton(
+                    quantity: int.tryParse((addons?.cart?.quantity??"").toString())??0,
+                    cartId: addons?.cart?.id,
+                    serviceId: addons?.id,
+                    onUpdate: onUpdate,
+                    onAddToCart: onAddToCart,
+                  ),
+                )
+
                 // Container(
                 //   decoration: BoxDecoration(
                 //     color: Colors.white,
@@ -145,20 +156,20 @@ class VerticalAddon extends StatelessWidget {
           ),
         ),
 
-        Positioned(
-          right: 0,
-          bottom: 0,
-          child: Container(
-            color: Colors.white,
-            child: AddToCartButton(
-              quantity: int.tryParse((addons?.cart?.quantity??"").toString())??0,
-              cartId: addons?.cart?.id,
-              serviceId: addons?.id,
-              onUpdate: onUpdate,
-              onAddToCart: onAddToCart,
-            ),
-          ),
-        ),
+        // Positioned(
+        //   right: 0,
+        //   bottom: 0,
+        //   child: Container(
+        //     color: Colors.white,
+        //     child: AddToCartButton(
+        //       quantity: int.tryParse((addons?.cart?.quantity??"").toString())??0,
+        //       cartId: addons?.cart?.id,
+        //       serviceId: addons?.id,
+        //       onUpdate: onUpdate,
+        //       onAddToCart: onAddToCart,
+        //     ),
+        //   ),
+        // ),
       ],
     );
   }

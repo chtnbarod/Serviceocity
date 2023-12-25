@@ -6,6 +6,7 @@ import 'package:serviceocity/theme/app_colors.dart';
 import 'package:serviceocity/utils/assets.dart';
 import 'package:serviceocity/utils/price_converter.dart';
 import 'package:serviceocity/view/account/logic.dart';
+import 'package:serviceocity/view/home/logic.dart';
 import 'package:serviceocity/widget/common_image.dart';
 import 'package:serviceocity/widget/custom_button.dart';
 
@@ -44,8 +45,8 @@ class ReferPage extends StatelessWidget {
                               onTap: (){
                                 Get.back();
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
                                 child: Icon(Icons.arrow_back, color: Colors.white,),
                               )),
                         ],
@@ -62,7 +63,7 @@ class ReferPage extends StatelessWidget {
                       const SizedBox(height: 15,),
 
                       Text("Refer now an earn up to ${PriceConverter
-                          .getFlag()}500",
+                          .getFlag()}${Get.find<HomeLogic>().settingModel?.referEarnFromAmount}",
                         style: TextStyle(
                             color: AppColors.whiteColor(),
                             fontWeight: FontWeight.bold
@@ -86,14 +87,14 @@ class ReferPage extends StatelessWidget {
                   ),
                 ),
 
-                SizedBox(height: 30,),
+                const SizedBox(height: 30,),
 
                 const Text("Referral code",
                   style: TextStyle(
                       fontWeight: FontWeight.bold
                   ),),
 
-                SizedBox(height: 15,),
+                const SizedBox(height: 15,),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -105,11 +106,11 @@ class ReferPage extends StatelessWidget {
                               color: Colors.black, width: 1)),
                           color: AppColors.appBackground
                       ),
-                      padding: EdgeInsets.symmetric(
+                      padding: const EdgeInsets.symmetric(
                           vertical: 10, horizontal: 30),
-                      child: const Center(
+                      child: Center(
                         child: Text(
-                          'SHD55G',
+                          logic.userModel?.myReferCode??"",
                         ),
                       ),
                     ),
@@ -117,14 +118,14 @@ class ReferPage extends StatelessWidget {
                 ),
 
 
-                SizedBox(height: 50,),
+                const SizedBox(height: 50,),
 
                 const Text("How it work?",
                   style: TextStyle(
                       fontWeight: FontWeight.bold
                   ),),
 
-                SizedBox(height: 15,),
+                const SizedBox(height: 15,),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -133,13 +134,13 @@ class ReferPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
 
-                      Icon(Icons.join_full),
-                      SizedBox(width: 15,),
+                      const Icon(Icons.join_inner),
+                      const SizedBox(width: 15,),
 
                       Flexible(
                         child: Text(
                           "Invite your friend to resister on $appName",
-                          style: TextStyle(
+                          style: const TextStyle(
                           ),),
                       ),
                     ],
@@ -153,21 +154,42 @@ class ReferPage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
 
-                      Icon(Icons.phone_android),
-                      SizedBox(width: 15,),
+                      const Icon(Icons.phone_android),
+                      const SizedBox(width: 15,),
 
                       Flexible(
                         child: Text(
-                          "When your Friend resister on $appName, both of you get worth ${PriceConverter
-                              .getFlag()}500",
-                          style: TextStyle(
+                          "When your Friend resister on $appName, his get worth ${PriceConverter
+                              .getFlag()}${Get.find<HomeLogic>().settingModel?.referEarnToAmount}",
+                          style: const TextStyle(
                           ),),
                       ),
                     ],
                   ),
                 ),
 
-                SizedBox(height: 20,),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+
+                      const Icon(Icons.shopping_cart_outlined),
+                      const SizedBox(width: 15,),
+
+                      Flexible(
+                        child: Text(
+                          "When your Friend complete fist order then you get ${PriceConverter
+                              .getFlag()}${Get.find<HomeLogic>().settingModel?.referEarnFromAmount}",
+                          style: const TextStyle(
+                          ),),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20,),
 
                 Padding(
                   padding: const EdgeInsets.symmetric(

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:serviceocity/core/di/api_client.dart';
 import 'package:serviceocity/model/UserModel.dart';
 import 'package:serviceocity/utils/toast.dart';
@@ -10,6 +11,7 @@ import 'package:serviceocity/view/home/logic.dart';
 import '../../core/di/api_provider.dart';
 import '../../core/routes.dart';
 import '../../core/di/get_di.dart' as di;
+import '../../services/init_fcm.dart';
 import '../select_address/view.dart';
 
 class AccountLogic extends GetxController implements GetxService{
@@ -20,12 +22,12 @@ class AccountLogic extends GetxController implements GetxService{
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
+  // final TextEditingController phoneController = TextEditingController();
 
   init(){
     nameController.text = userModel?.name??"";
     emailController.text = userModel?.email??"";
-    phoneController.text = userModel?.mobile??"";
+    // phoneController.text = userModel?.mobile??"";
     WidgetsBinding.instance.addPostFrameCallback((_) {
       update();
     });
@@ -80,6 +82,9 @@ class AccountLogic extends GetxController implements GetxService{
         Toast.show(toastMessage: value.body['message']),
         userModel = UserModel.fromJson(value.body['data']),
       },
+      if(value.statusCode == 422){
+        Toast.show(toastMessage: value.body['error']??value.body['message']??"Try Again",isError: true),
+      }
     }).whenComplete(() => {
       updating = false,
       update(),
@@ -143,9 +148,10 @@ class AccountLogic extends GetxController implements GetxService{
 
   getLoggedInUser() async{
     try{
-      apiClient.getAPI(ApiProvider.user).then((value) => {
+     await apiClient.getAPI(ApiProvider.user).then((value) => {
         if(value.statusCode == 200){
           userModel = UserModel.fromJson(value.body['data']),
+          InitFcm().initialize(),
           Get.offAllNamed(rsBasePage),
         }
       });
@@ -156,25 +162,19 @@ class AccountLogic extends GetxController implements GetxService{
   
 
   saveLoginData(String token, dynamic json) async{
-    await di.init();
+   // await di.init();
     apiClient.updateHeader(token);
     await apiClient.sharedPreferences.setString(ApiProvider.preferencesToken,token);
     userModel = UserModel.fromJson(json);
-    if(GetPlatform.isWeb){
-      Get.offAllNamed(rsService,arguments: {
-        'category_id' : 1,
-        'sub_category_id' : 1,
-      });
-    }else{
-      Get.offAllNamed(rsBasePage);
-    }
+    InitFcm().initialize(setToken: true);
+    Get.offAllNamed(rsBasePage);
   }
 
   // SelectAddress
 
   Future<void> logout() async{
     await apiClient.sharedPreferences.remove(ApiProvider.preferencesToken);
-    //await FirebaseMessaging.instance.deleteToken();
+    await OneSignal.logout();
     Get.offAllNamed(rsLoginPage);
   }
 
@@ -194,6 +194,36 @@ class AccountLogic extends GetxController implements GetxService{
       update()
     });
 
+  }
+
+  int? isVerifyIndex;
+  Future<bool> validateAddress({ required String id, required int index }) async {
+    bool isValid = false;
+    isVerifyIndex  = index;
+    update();
+    
+   try{
+     await apiClient.postAPI(ApiProvider.validateAddress, {
+       "address_id" : id
+     }).then((value) => {
+       if(value.statusCode == 200){
+         isValid = true,
+       }else if(value.statusCode == 404){
+         Toast.show(toastMessage: value.body['error']??"Use Another address",isError: true)
+       }
+     }).whenComplete(() => {
+       isVerifyIndex = null,
+       update()
+     });
+   }catch(e){
+     //
+   }
+
+    return isValid;
+  }
+
+  setPlayerId({ required String? token }) async{
+   await apiClient.postAPI(ApiProvider.updatePlayerId, { "player_id" : token });
   }
 
 }

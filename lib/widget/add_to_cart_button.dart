@@ -86,6 +86,8 @@ class _AddToCartButtonState extends State<AddToCartButton> {
                     if(res.statusCode == 200){
                       widget.onAddToCart!(res.body);
                       Get.find<CartLogic>().getCart();
+                    }if(res.statusCode == 422){
+                      Toast.show(toastMessage: res.body['error']??"try again",isError: true);
                     }
                   }
                 },

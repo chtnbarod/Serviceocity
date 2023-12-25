@@ -65,57 +65,94 @@ class SelectAddressPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   bool isPrimary = logic.userModel?.myaddress?[index].id ==
                       logic.userModel?.primaryAddress?.id;
-                  return InkWell(
-                    onTap: () {
-                      if(callback != null){
-                        callback!(logic.userModel?.myaddress?[index].toJson());
-                        Get.back();
-                      }
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-
-                        const SizedBox(height: 5,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+
+                            const SizedBox(height: 5,),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text((logic.userModel?.myaddress?[index]
-                                    .type ?? "Other").toCapitalizeFirstLetter(),
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15
-                                  ),),
+                                Row(
+                                  children: [
+                                    Text((logic.userModel?.myaddress?[index]
+                                        .type ?? "Other").toCapitalizeFirstLetter(),
+                                      style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15
+                                      ),),
+                                  ],
+                                ),
+
+                                if(isPrimary)
+                                  const Text("Primary",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15,
+                                        color: AppColors.primary
+                                    ),),
                               ],
                             ),
 
-                            if(isPrimary)
-                              const Text("Primary",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                    color: AppColors.primary
-                                ),),
+                            const SizedBox(height: 5,),
+
+                            Text(
+                              logic.userModel?.myaddress?[index].address1 ?? "",
+                              style: const TextStyle(
+                                  fontSize: 12
+                              ),),
+
+                            const SizedBox(height: 15,),
+
+                            const Divider(height: 1,),
+
+                            const SizedBox(height: 5,),
                           ],
                         ),
-
-                        const SizedBox(height: 5,),
-
-                        Text(
-                          logic.userModel?.myaddress?[index].address1 ?? "",
-                          style: const TextStyle(
-                              fontSize: 12
-                          ),),
-
-                        const SizedBox(height: 15,),
-
-                        const Divider(height: 1,),
-
-                        const SizedBox(height: 5,),
-                      ],
-                    ),
+                      ),
+                      InkWell(
+                        onTap: logic.isVerifyIndex == index ? null : (){
+                          logic.validateAddress(index: index,id: "${logic.userModel?.myaddress?[index].id}").then((value) => {
+                            if(value){
+                              if(callback != null){
+                                callback!(logic.userModel?.myaddress?[index].toJson()),
+                                Get.back(),
+                              }
+                            }
+                          });
+                        },
+                        child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 0.5,color:  Colors.blue),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            height: 40,
+                            width: 65,
+                            child: logic.isVerifyIndex == index ?
+                            const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                    width: 12,
+                                    height: 12,
+                                    child: CircularProgressIndicator(strokeWidth: 1,)),
+                              ],
+                            ) :
+                            const Center(
+                              child: Text("Select",
+                                style: TextStyle(
+                                    color: Colors.blue
+                                ),),
+                            )
+                        ),
+                      ),
+                    ],
                   );
                 },),
             ),

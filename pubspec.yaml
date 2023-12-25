@@ -45,22 +45,25 @@ dependencies:
   google_maps_flutter:
   geolocator:
   geocoding:
-  google_places_flutter:
-  dio:
   pull_to_refresh:
-  flutter_staggered_grid_view:
+  #flutter_staggered_grid_view:
   carousel_slider:
   cached_network_image:
   file_picker:
   image_picker:
   image_cropper:
+  speech_to_text: ^6.5.1
+  animated_text_kit:
+  google_places_flutter: ^2.0.6
   telephony: ^0.2.0
   html_viewer_elite: ^0.0.4
   flutter_remix: ^0.0.3
   country_list_pick: ^1.0.1+6
   mobkit_dashed_border: ^0.0.5
-  #sms_autofill: ^2.3.0
-  #flutter_html: ^2.0.0
+  phonepe_payment_sdk: ^1.0.4
+  onesignal_flutter: ^5.0.4
+  dio:
+
 
 dev_dependencies:
   flutter_test:
@@ -88,6 +91,7 @@ flutter:
   # assets:
   assets:
     - assets/images/
+    - assets/menu/
 
   # fonts:
   fonts:

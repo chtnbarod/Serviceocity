@@ -3,7 +3,9 @@ import 'package:serviceocity/model/CartModel.dart';
 import 'package:serviceocity/view/cart/logic.dart';
 
 import '../../core/di/api_client.dart';
+import '../../core/di/api_provider.dart';
 import '../../utils/price_converter.dart';
+import '../../utils/toast.dart';
 
 class CheckoutData{
   final double price;
@@ -38,12 +40,37 @@ class CheckoutLogic extends GetxController {
     getCheckoutData(json: {},notify: true);
   }
 
-  dynamic json = {};
+  Map<String, dynamic>? json;
   applyCode(dynamic json){
     getCheckoutData(json: json);
     if((checkoutData.discount) > 0){
       this.json = json;
     }
+    update();
+  }
+
+  bool isSearch = false;
+  Future<void> applyCouponCode(String? text) async{
+    if(isSearch || (text?.length??0) < 3) return;
+    isSearch = true;
+    json = null;
+    update();
+    Response response = await apiClient.postAPI(ApiProvider.applyCoupon,{
+      'coupon_identifier' : text//"ZD8A7X"//text
+    });
+
+    if(response.statusCode == 200){
+      json = {
+        "id" : response.body?['discount']?['id'],
+        "amount" : response.body?['discount']?['amount'],
+        "percent" : response.body?['discount']?['percent'],
+        "type" : response.body?['discount']?['type'],
+        "code" : response.body?['discount']?['code']
+      };
+    }else if(response.statusCode == 422){
+      Toast.show(toastMessage: response.body?['message']?? response.body?['error']?? "Coupon can`t apply",isError: true);
+    }
+    isSearch = false;
     update();
   }
 
@@ -123,7 +150,7 @@ class CheckoutLogic extends GetxController {
         "quantity": cartModel[i].quantity,
         "category_id": cartModel[i].categoryId,
         "tax": cartModel[i].catTax,
-        "coupon_id": json['id']??0,
+        "coupon_id": json?['id']??0,
         "date": date,
         "time": time,
         "type": mode,

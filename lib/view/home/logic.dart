@@ -8,11 +8,14 @@ import 'package:serviceocity/view/account/logic.dart';
 import 'package:serviceocity/view/category/logic.dart';
 import 'package:serviceocity/view/map/AddressListModel.dart';
 import '../../core/di/api_client.dart';
+import '../../model/RecentOrderModel.dart';
+import '../../model/SettingModel.dart';
 
 class HomeLogic extends GetxController implements GetxService{
   final ApiClient apiClient;
   HomeLogic({required this.apiClient});
 
+  SettingModel? settingModel;
 
   List<FeatureModel> featureList = [];
 
@@ -25,6 +28,16 @@ class HomeLogic extends GetxController implements GetxService{
     isEmptyCategory = isEmpty;
   }
 
+  getSetting() async{
+    if(settingModel != null) return;
+    await apiClient
+        .getAPI(ApiProvider.globalSetting).then((value) => {
+          if(value.statusCode == 200){
+           settingModel = SettingModel.fromJson(value.body['data']),
+          }
+    });
+  }
+
   bool isPullProcess = false;
   pullRefresh({bool notify = false }) async{
     if(isPullProcess) return;
@@ -33,9 +46,12 @@ class HomeLogic extends GetxController implements GetxService{
     if(notify){
       update();
     }
+
     await Get.find<CategoryLogic>().getCategory(notify: false);
-    await getFeature();
     await getBanner();
+    await getFeature();
+    await getRecentOrder();
+    await getSetting();
     isPullProcess = false;
     update();
   }
@@ -46,6 +62,18 @@ class HomeLogic extends GetxController implements GetxService{
       if(value.statusCode == 200){
         value.body['data'].forEach((v) {
           featureList.add(FeatureModel.fromJson(v));
+        }),
+      }
+    });
+  }
+
+  List<RecentOrderModel> recentOrderModel = [];
+  getRecentOrder() async{
+    recentOrderModel.clear();
+    await apiClient.getAPI(ApiProvider.getRecentOrders).then((value) => {
+      if(value.statusCode == 200){
+        value.body['recent_orders'].forEach((v) {
+          recentOrderModel.add(RecentOrderModel.fromJson(v));
         }),
       }
     });
@@ -71,10 +99,6 @@ class HomeLogic extends GetxController implements GetxService{
         }),
       }
     });
-  }
-
-  emptyAddress(){
-    return Get.find<AccountLogic>().userModel?.myaddress?.isEmpty??true;
   }
 
   /// here Map work

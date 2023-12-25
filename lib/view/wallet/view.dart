@@ -17,6 +17,7 @@ class WalletPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Get.find<WalletLogic>().getWallet();
     return Scaffold(
       backgroundColor: AppColors.whiteColor(),
       appBar: AppBar(
@@ -66,7 +67,7 @@ class WalletPage extends StatelessWidget {
                           bottom: 20,
                           child: Column(
                             children: [
-                              Text("Powered by ${appName}",
+                              Text("Powered by $appName",
                                 style: const TextStyle(
                                   color: Colors.white70,
                                   fontSize: 15,
@@ -117,7 +118,7 @@ class WalletPage extends StatelessWidget {
                                           fontSize: 15.5
                                       ),),
                                     const SizedBox(height: 5,),
-                                    Text("${PriceConverter.getFlag()}500",
+                                    Text("${PriceConverter.getFlag()}${logic.totalCredit}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: AppColors.whiteColor(),
@@ -164,7 +165,7 @@ class WalletPage extends StatelessWidget {
                                           fontSize: 15.5
                                       ),),
                                     const SizedBox(height: 5,),
-                                    Text("${PriceConverter.getFlag()}500",
+                                    Text("${PriceConverter.getFlag()}${logic.totalDebit}",
                                       style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,

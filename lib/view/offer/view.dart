@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:serviceocity/core/di/api_provider.dart';
 import 'package:serviceocity/widget/common_image.dart';
+import 'package:serviceocity/widget/custom_input.dart';
 import 'package:serviceocity/widget/not_found.dart';
 
 import '../../utils/price_converter.dart';
@@ -26,6 +27,32 @@ class OfferPage extends StatelessWidget {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    CustomInput(
+                      hintText: "Enter Coupon code",
+                      onTextChanged: (String? text){
+                        logic.applyCouponCode(text);
+                      },
+                      suffixIcon: TextButton(onPressed: logic.json == null ? null : (){
+                        if(callback != null){
+                          callback!(logic.json);
+                          Get.back();
+                        }
+                      }, child: const Text("Apply")),
+                    ),
+                    if(logic.isSearch)...[
+                      const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10),
+                        child: LinearProgressIndicator(minHeight: 1),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
 
 
               if(logic.inProcess)...[

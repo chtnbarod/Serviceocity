@@ -23,6 +23,8 @@ import '../view/login/view.dart';
 import '../view/profile/binding.dart';
 import '../view/profile/view.dart';
 import '../view/refer/view.dart';
+import '../view/search/binding.dart';
+import '../view/search/view.dart';
 import '../view/service/binding.dart';
 import '../view/service/view.dart';
 import '../view/service_detail/view.dart';
@@ -30,7 +32,6 @@ import '../view/signup/view.dart';
 import '../view/splash/binding.dart';
 import '../view/splash/view.dart';
 import '../view/time_slots/view.dart';
-import '../view/wallet/binding.dart';
 import '../view/wallet/view.dart';
 
 /// application routes name
@@ -53,6 +54,7 @@ const String rsReferPage = "/ReferPage";
 const String rsWalletPage = "/WalletPage";
 const String rsCategoryPage = "/CategoryPage";
 const String rsBookingPage = "/BookingPage";
+const String rsSearchPage = "/SearchPage";
 // const String rsOfferPage = "/OfferPage";
 
 class Routes{
@@ -65,6 +67,7 @@ class Routes{
     GetPage(name: rsCartPage, page: () => const CartPage()),
     GetPage(name: rsVerifyOtpPage, page: () =>  const VerifyOtpPage()),
     GetPage(name: rsCategoryPage, page: () =>  const CategoryPage()),
+    GetPage(name: rsWalletPage, page: () => const WalletPage()),
 
     GetPage(name: rsDefaultPage, page: () => const SplashPage(),binding: SplashBinding()),
     GetPage(name: rsLoginPage, page: () => const LoginPage(),binding: LoginBinding()),
@@ -77,11 +80,11 @@ class Routes{
     GetPage(name: rsAddressPage, page: () => const AddressPage(),binding: AddressBinding()),
     GetPage(name: rsAddressPage, page: () => const CheckoutPage(),binding: AddressBinding()),
     GetPage(name: rsReferPage, page: () => const ReferPage(),binding: ReferBinding()),
-    GetPage(name: rsWalletPage, page: () => const WalletPage(),binding: WalletBinding()),
 
     GetPage(name: rsCheckoutPage, page: () => const CheckoutPage(),binding: CheckoutBinding()),
     GetPage(name: rsTimeSlotsPage, page: () => const TimeSlotsPage(),binding: TimeSlotsBinding()),
     GetPage(name: rsBookingPage, page: () => const BookingPage(),binding: BookingBinding()),
+    GetPage(name: rsSearchPage, page: () => const SearchPage(),binding: SearchBinding()),
   ];
 
 }

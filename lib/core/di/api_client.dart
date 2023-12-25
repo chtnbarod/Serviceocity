@@ -10,15 +10,16 @@ class ApiClient extends GetConnect implements GetxService{
   final String apkBaseUrl;
   Map<String,String>? _mainHeaders;
   final SharedPreferences sharedPreferences;
+
+  final bool useDio = true;
   ApiClient({required this.sharedPreferences,required this.apkBaseUrl}){
-    updateServer(apkBaseUrl);
-    httpClient.timeout = const Duration(seconds: 30);
-    token = sharedPreferences.getString(ApiProvider.preferencesToken);
+    initHttp();
     _mainHeaders = { "Authorization" : 'Bearer $token',"Accept" : "application/json" };
   }
 
-  updateServer(String baseUrl){
-    httpClient.baseUrl = baseUrl;
+  initHttp(){
+    httpClient.baseUrl = apkBaseUrl;
+    token = sharedPreferences.getString(ApiProvider.preferencesToken);
   }
 
   updateHeader(String token){
@@ -34,42 +35,40 @@ class ApiClient extends GetConnect implements GetxService{
   static const int errorCode = -101;
   static const int noInternetCode = -1;
 
-  Future<Response> getAPI(String url, {bool useHeader = true}) async {
+  Future<Response> getAPI(String url) async {
     try {
-      print("_mainHeaders $_mainHeaders");
-      return await _handleResponse(await get(url, headers: useHeader ? _mainHeaders : null),"\n<>_______________url::<$url>_______________headers::<${useHeader ? _mainHeaders : null}>_______________query::<$query>_______________<>\n");
+      return await _handleHttpResponse(await get(url, headers: _mainHeaders),url: url);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<Response> deleteAPI(String url, {bool useHeader = true}) async {
+  Future<Response> deleteAPI(String url) async {
     try {
-      print("_mainHeaders $_mainHeaders");
-      return await _handleResponse(await delete(url, headers: useHeader ? _mainHeaders : null),"\n<>_______________url::<$url>_______________headers::<${useHeader ? _mainHeaders : null}>_______________query::<$query>_______________<>\n");
+      return await _handleHttpResponse(await delete(url, headers: _mainHeaders),url: url);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<Response> postAPI(String? url, dynamic body, {Map<String, dynamic>? query,bool useHeader = true}) async {
+  Future<Response> postAPI(String? url, dynamic body) async {
     try {
-      return _handleResponse(await post(url, body,headers: useHeader ? _mainHeaders : null),"\n<>_______________url::<$url>_______________headers::<${useHeader ? _mainHeaders : null}>_______________body::<$body>_______________<>\n");
+      return _handleHttpResponse(await post(url, body,headers: _mainHeaders),body: body,url: url);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<Response> putAPI(String url, dynamic body, {Map<String, dynamic>? query,bool useHeader = true}) async {
+  Future<Response> putAPI(String url, dynamic body) async {
     try {
-      return _handleResponse(await put(url,body,headers: useHeader ? _mainHeaders : null,),"\n<>_______________url::<$url>_______________headers::<${useHeader ? _mainHeaders : null}>_______________body::<$body>_______________<>\n");
+      return _handleHttpResponse(await put(url,body,headers: _mainHeaders,),body: body,url: url);
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<Response> _handleResponse(Response response,String test) async {
-    print("$test\n");
+  Future<Response> _handleHttpResponse(Response response,{ dynamic body, String? url }) async {
+    print("\n<>--------------\n$url\n$body-----------------------<>\n");
     print("\n<>******************${response.statusCode}*${response.body}*******************<>\n");
     // chk now all status is 404 422 200 401
     if (response.status.hasError) {

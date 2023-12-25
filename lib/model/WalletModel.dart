@@ -25,17 +25,21 @@ class WalletModel {
       this.deletedAt,});
 
   WalletModel.fromJson(dynamic json) {
-    id = json['id'];
-    userId = json['user_id'];
-    status = json['status'];
-    balance = json['balance'];
-    lastTransfer = json['last_transfer'];
-    lastTransferType = json['last_transfer_type'];
-    bonus = json['bonus'];
-    minBalance = json['min_balance'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    try{
+      id = json['id'];
+      userId = json['user_id'];
+      status = json['status'];
+      balance = json['balance'];
+      lastTransfer = json['last_transfer'];
+      lastTransferType = json['last_transfer_type'];
+      bonus = json['bonus'];
+      minBalance = json['min_balance'];
+      createdAt = json['created_at'];
+      updatedAt = json['updated_at'];
+      deletedAt = json['deleted_at'];
+    }catch(e){
+      print("objectobject $e");
+    }
   }
   int? id;
   String? userId;

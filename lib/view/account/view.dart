@@ -48,7 +48,9 @@ class _AccountPageState extends State<AccountPage> {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-        
+
+                  const SizedBox(height: 20,),
+
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -140,14 +142,14 @@ class _AccountPageState extends State<AccountPage> {
                     hintText: "Email",
                   ),
         
-                  const SizedBox(height: 20,),
-        
-                  const Text("Mobile Number"),
-                  CustomInput(
-                    enabled: false,
-                    textController: logic.phoneController,
-                    hintText: "Mobile Number",
-                  ),
+                  // const SizedBox(height: 20,),
+                  //
+                  // const Text("Mobile Number"),
+                  // CustomInput(
+                  //   enabled: false,
+                  //   textController: logic.phoneController,
+                  //   hintText: "Mobile Number",
+                  // ),
         
                   const SizedBox(height: 50,),
         
@@ -182,9 +184,12 @@ class _AccountPageState extends State<AccountPage> {
               top: 5,
               child: Row(
                 children: [
-                  Icon(Icons.photo , color: Theme.of(context).highlightColor, size: 24,),
                   const SizedBox(width: 10,),
-                  Text("Choose Option".tr,),
+                  Text("Select Media Option".tr,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 17
+                  ),),
                 ],
               ),
             ),
@@ -194,7 +199,6 @@ class _AccountPageState extends State<AccountPage> {
               child: SingleChildScrollView(
                 child: ListBody(
                   children: [
-                    Divider(height: 1,color: Theme.of(context).primaryColor,),
                     ListTile(
                       onTap: (){
                         pickGalleryPic().then((value) => {
@@ -202,10 +206,10 @@ class _AccountPageState extends State<AccountPage> {
                         });
                       },
                       title: Text("Gallery".tr),
-                      leading: Icon(Icons.perm_media,color: Theme.of(context).highlightColor,),
+                      leading: Icon(Icons.perm_media,color: AppColors.primary,),
                     ),
 
-                    Divider(height: 1,color: Theme.of(context).primaryColor,),
+                    SizedBox(height: 5,),
                     ListTile(
                       onTap: (){
                         pickCameraPic().then((value) => {
@@ -213,7 +217,7 @@ class _AccountPageState extends State<AccountPage> {
                         });
                       },
                       title: Text("Camera".tr),
-                      leading: Icon(Icons.camera,color: Theme.of(context).highlightColor,),
+                      leading: Icon(Icons.camera,color: AppColors.primary,),
                     ),
                   ],
                 ),

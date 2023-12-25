@@ -35,8 +35,6 @@ class ServiceDetailLogic extends GetxController {
     });
   }
 
-
-
   bool addInCart = false;
   bool isIncrease = false;
   bool isDecrease = false;
@@ -50,10 +48,13 @@ class ServiceDetailLogic extends GetxController {
     }).then((value) => {
       if(value.statusCode == 200){
         serviceDetailsModel?.cart = Cart.fromJson(value.body),
-      }
+        Get.find<CartLogic>().getCart(),
+      },
+    if(value.statusCode == 422){
+        Toast.show(toastMessage: value.body['error']??"try again",isError: true)
+    }
     }).whenComplete(() => {
       addInCart = false,
-      Get.find<CartLogic>().getCart(),
       update(),
     });
   }

@@ -31,20 +31,24 @@ class TransactionModel {
       this.deletedAt,});
 
   TransactionModel.fromJson(dynamic json) {
-    id = json['id'];
-    fromId = json['from_id'];
-    toId = json['to_id'];
-    amount = json['amount'];
-    transactionDate = json['transaction_date'];
-    type = json['type'];
-    details = json['details'];
-    comment = json['comment'];
-    status = json['status'];
-    orderId = json['order_id'];
-    amountType = json['amount_type'];
-    createdAt = json['created_at'];
-    updatedAt = json['updated_at'];
-    deletedAt = json['deleted_at'];
+    try{
+      id = json['id'];
+      fromId = json['from_id'];
+      toId = json['to_id'];
+      amount = json['amount'];
+      transactionDate = json['transaction_date'];
+      type = json['type'];
+      details = json['details'];
+      comment = json['comment'];
+      status = json['status'];
+      orderId = json['order_id'];
+      amountType = json['amount_type'];
+      createdAt = json['created_at'];
+      updatedAt = json['updated_at'];
+      deletedAt = json['deleted_at'];
+    }catch(e){
+      //
+    }
   }
   int? id;
   String? fromId;
@@ -55,7 +59,7 @@ class TransactionModel {
   String? details;
   String? comment;
   String? status;
-  int? orderId;
+  String? orderId;
   String? amountType;
   String? createdAt;
   String? updatedAt;

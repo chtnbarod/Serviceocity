@@ -7,11 +7,13 @@ import 'package:serviceocity/view/account/logic.dart';
 import 'package:serviceocity/view/category/logic.dart';
 import 'package:serviceocity/view/home/widget/grid_category.dart';
 import 'package:serviceocity/view/home/widget/order.dart';
+import 'package:serviceocity/view/home/widget/recent_order.dart';
 import 'package:serviceocity/view/home/widget/sub_category.dart';
 import 'package:serviceocity/view/map/AddressListModel.dart';
 import 'package:serviceocity/widget/bottom_sheet.dart';
 
 import '../../core/routes.dart';
+import '../../services/init_fcm.dart';
 import '../../utils/assets.dart';
 import '../../utils/price_converter.dart';
 import '../../widget/common_image.dart';
@@ -93,7 +95,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     if (GetPlatform.isAndroid) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (Get.find<HomeLogic>().emptyAddress()) {
+        if (Get.find<AccountLogic>().userModel?.primaryAddress == null) {
           checkLocation();
         }
       });
@@ -323,59 +325,65 @@ class _HomePageState extends State<HomePage> {
                         ] else
                           ...[
 
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 8),
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 15, vertical: 10),
-                              decoration: BoxDecoration(
-                                color: AppColors.appBackground.withOpacity(0.3),
-                                border: Border.all(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    width: 0.5),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment
-                                    .spaceBetween,
-                                children: [
-                                  const Row(
-                                    children: [
+                            InkWell(
+                              onTap: (){
+                                Get.toNamed(rsSearchPage);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 8),
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 15, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: AppColors.appBackground.withOpacity(0.3),
+                                  border: Border.all(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      width: 0.5),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .spaceBetween,
+                                  children: [
+                                    const Row(
+                                      children: [
 
-                                      Icon(Icons.search, color: Colors.blue,),
-                                      SizedBox(width: 10,),
-                                      Text("Search",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            color: Colors.black
-                                        ),)
-                                    ],
-                                  ),
+                                        Icon(Icons.search, color: Colors.blue,),
+                                        SizedBox(width: 10,),
+                                        Text("Search",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.black
+                                          ),)
+                                      ],
+                                    ),
 
-                                  Row(
-                                    children: [
-                                      Container(
-                                        width: 1,
-                                        height: 25,
-                                        margin: const EdgeInsets.symmetric(
-                                            horizontal: 10),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 5, vertical: 2),
-                                        decoration: const BoxDecoration(
-                                            border: Border(right: BorderSide(
-                                                width: 1, color: Colors.grey))
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 1,
+                                          height: 25,
+                                          margin: const EdgeInsets.symmetric(
+                                              horizontal: 10),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5, vertical: 2),
+                                          decoration: const BoxDecoration(
+                                              border: Border(right: BorderSide(
+                                                  width: 1, color: Colors.grey))
+                                          ),
                                         ),
-                                      ),
 
-                                      const Icon(
-                                        Icons.mic_none_rounded,
-                                        color: Colors.blue,)
-                                    ],
-                                  )
-                                ],
+                                        const Icon(
+                                          Icons.mic_none_rounded,
+                                          color: Colors.blue,)
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
 
+                           if(logic.topImage?.isNotEmpty??false)
                             Stack(
                               clipBehavior: Clip.none,
                               children: [
@@ -454,37 +462,56 @@ class _HomePageState extends State<HomePage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // const Text("Recent Orders",
-                                  //   style: TextStyle(
-                                  //       fontWeight: FontWeight.w700,
-                                  //       fontSize: 16
-                                  //   ),),
 
-                                  // const SizedBox(height: 10,),
-                                  // const SingleChildScrollView(
-                                  //   scrollDirection: Axis.horizontal,
-                                  //   child: Row(
-                                  //     children: [
-                                  //       Order(),
-                                  //       SizedBox(width: 10,),
-                                  //       Order(),
-                                  //     ],
-                                  //   ),
-                                  // ),
+                                 if(logic.recentOrderModel.isNotEmpty)
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Recent Orders",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 16
+                                        ),),
 
-                                  const SizedBox(height: 20,),
+                                      const SizedBox(height: 10,),
+                                      SizedBox(
+                                        height: 130,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis
+                                              .horizontal,
+                                          child: Row(
+                                            children: [
+                                              for(int i = 0; i < logic.recentOrderModel.length; i++)...[
+                                                Padding(
+                                                  padding: const EdgeInsets
+                                                      .only(
+                                                      right: 10),
+                                                  child: RecentOrder(
+                                                      recentOrderModel: logic
+                                                          .recentOrderModel[i]),
+                                                ),
+                                              ]
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
 
-                                  CommonImage(
-                                    width: MediaQuery
-                                        .of(context)
-                                        .size
-                                        .width,
-                                    radius: 0,
-                                    fit: BoxFit.fitWidth,
-                                    assetPlaceholder: "assets/images/banner.jpeg",
-                                    imageUrl: "${ApiProvider.url}/${logic
-                                        .middleImage ??
-                                        ""}",
+                                  if(logic.middleImage?.isNotEmpty??false)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 20),
+                                    child: CommonImage(
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width,
+                                      radius: 0,
+                                      fit: BoxFit.fitWidth,
+                                      imageUrl: "${ApiProvider.url}/${logic
+                                          .middleImage ??
+                                          ""}",
+                                    ),
                                   ),
 
                                   // const SizedBox(height: 30,),
@@ -882,12 +909,23 @@ class _HomePageState extends State<HomePage> {
                                   // )
 
 
+                                  if(logic.bottomImage?.isNotEmpty??false)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 20),
+                                      child: CommonImage(
+                                        width: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width,
+                                        radius: 0,
+                                        fit: BoxFit.fitWidth,
+                                        imageUrl: "${ApiProvider.url}/${logic.bottomImage ?? ""}",
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
                           ],
-
-
                       ],
                   ],
                 );
